@@ -8,11 +8,20 @@ int main(int argc, char **argv)
 		exit(EXIT_SUCCESS);
 	}
 	quit = false;
+	system("clear");
+	aphexWin base;
+	aphexWin addr;
+	aphexWinInit(&base,0,0,0,0);
+	aphexWinInit(&addr,0,0,10,10);
 	buf_open((unsigned char*)argv[1]);
+	cursorX = cursorY = 0;
 	while (!quit) {
-		win_checksize();
+		aphexWinSetTermSize(&base);
+		aphexContentPrompt(&base);
+		aphexWinDraw(&base);
 		process_input();
 	}
 	buf_close();
+	system("clear");
 	return 0;
 }

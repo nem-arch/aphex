@@ -40,17 +40,17 @@ void process_input()
 			quit = true;
 			break;
 	}
-	win_redraw();
-	cursor_set(cursorX, cursorY);
 }
 
 void cursor_set(int x, int y)
 {
-	char tput[128];
-	sprintf(tput,"tput cup %i %i",y,x);
-	system(tput);
-	cursorX = x;
-	cursorY = y;
+	if ((x <= aphexTerm.ws_col-1) && (x >= 0) && (y <= aphexTerm.ws_row-1) && (y >= 0)) {
+		char tput[128];
+		sprintf(tput,"tput cup %i %i",y,x);
+		system(tput);
+		cursorX = x;
+		cursorY = y;
+	}
 }
 
 void cursor_move(int x, int y)
