@@ -5,9 +5,9 @@ INCDIR			=
 LIBDIR			=
 LDFLAGS			=
 LIBS			= 
-CFLAGS			= -Wall -ggdb -lpanel -lncurses -std=c99 -pedantic
+CFLAGS			= -Wall -ggdb -std=c99 -pedantic
 
-$(TARGET): aphex.c buffer.c view.c
+$(TARGET): aphex.c buffer.c view.c input.c
 	gcc $^ $(CFLAGS) -o $@
 
 clean:

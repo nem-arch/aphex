@@ -7,7 +7,12 @@ int main(int argc, char **argv)
 		printf("usage: %s <file>\n", argv[0]);
 		exit(EXIT_SUCCESS);
 	}
+	quit = false;
 	buf_open((unsigned char*)argv[1]);
+	while (!quit) {
+		win_checksize();
+		process_input();
+	}
 	buf_close();
 	return 0;
 }

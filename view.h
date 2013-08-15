@@ -1,33 +1,11 @@
 #ifndef VIEW_H_INCLUDED
 #define VIEW_H_INCLUDED
 
-struct {
-	int origin;
-	int lineLenAddr;
-	int lineLenHex;
-	int lineLenColumn;
-	WINDOW *lineAddrWin;
-	WINDOW *lineHexWin;
-	WINDOW *lineAsciiWin;
-	WINDOW *cmdWin;
-	PANEL *lineAddrPanel;
-	PANEL *lineHexPanel;
-	PANEL *lineAsciiPanel;
-	PANEL *promptPanel;
-} view;
+struct winsize wnew, wold;
 
-void view_open(int lineLenAddr, int lineLenHex, int lineLenColumn);
+/* check windowsize and redraw if changed */
+void win_checksize();
 
-void view_close();
-
-void view_clear();
-
-void view_prompt();
-
-void view_cursor();
-
-void view_update();
-
-void view_display();
+void win_redraw();
 
 #endif // VIEW_H_INCLUDED
