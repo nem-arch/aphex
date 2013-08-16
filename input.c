@@ -44,6 +44,20 @@ void aphexInputProcess()
 			comBuf[0] = '\0';
 			comNum = 1;
 			break;
+
+		case (APHEX_INSERT_MODE):
+			if (aphexMode != APHEX_INSERT_MODE) {
+				aphexMode = APHEX_INSERT_MODE;
+			}
+			break;
+		case (APHEX_COMMAND_MODE):
+			if (aphexMode != APHEX_COMMAND_MODE) {
+				aphexMode = APHEX_COMMAND_MODE;
+			}
+			break;
+		case (APHEX_DELETE_COMBUF):
+			comBuf[0] = '\0';
+			break;
 		case (QUIT):
 			quit = true;
 			break;
@@ -69,43 +83,53 @@ void aphexInputProcess()
 
 aphexCom parseComBuf(char c)
 {
-	comNum = 1;
-	switch (c) {
-		/* commands working with comBuf */
-		case ('j'):
-			return CURSOR_DOWN;
-		case ('k'):
-			return CURSOR_UP;
-		case ('h'):
-			return CURSOR_LEFT;
-		case ('l'):
-			return CURSOR_RIGHT;
-		case ('g'):
-			return CURSOR_BOTTOM;
+	if (aphexMode == APHEX_COMMAND_MODE) {
+		comNum = 1;
+		switch (c) {
+			/* commands working with comBuf */
+			case ('j'):
+				return CURSOR_DOWN;
+			case ('k'):
+				return CURSOR_UP;
+			case ('h'):
+				return CURSOR_LEFT;
+			case ('l'):
+				return CURSOR_RIGHT;
+			case ('g'):
+				return CURSOR_BOTTOM;
 
-		/* commands ignoring comBuf*/
-		case ('Q'):
-			comBuf[0] = '\0';
-			return QUIT;
-		case ('G'):
-			comBuf[0] = '\0';
-			return CURSOR_TOP;
-		case ('0'):
-			if (comBuf[0]!='\0') return NONE;
-			comBuf[0] = '\0';
-			return CURSOR_HOME;
-		case ('$'):
-			comBuf[0] = '\0';
-			return CURSOR_END;
-		case ('q'):
-			comBuf[0] = '\0';
-			return APHEX_REDRAW;
-		default:
-			if (isNum(c)) {
-				sprintf(comBuf,"%s%c\n",comBuf,c);
-				comNum = (c-'0');
-			}
-			return NONE;
+				/* commands ignoring comBuf*/
+			case ('i'):
+				return APHEX_INSERT_MODE;
+			case (0x1B):
+				return APHEX_DELETE_COMBUF;
+			case ('Q'):
+				comBuf[0] = '\0';
+				return QUIT;
+			case ('G'):
+				comBuf[0] = '\0';
+				return CURSOR_TOP;
+			case ('0'):
+				if (comBuf[0]!='\0') return NONE;
+				comBuf[0] = '\0';
+				return CURSOR_HOME;
+			case ('$'):
+				comBuf[0] = '\0';
+				return CURSOR_END;
+			case ('q'):
+				comBuf[0] = '\0';
+				return APHEX_REDRAW;
+			default:
+				if (isNum(c)) {
+					sprintf(comBuf,"%s%c\n",comBuf,c);
+					comNum = (c-'0');
+				}
+				return NONE;
+		}
+	}
+	if (aphexMode == APHEX_INSERT_MODE) {
+		if (c == 0x1B) return APHEX_COMMAND_MODE;
+		buf_edit(c);
 	}
 	return NONE;
 }

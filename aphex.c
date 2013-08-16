@@ -12,6 +12,7 @@ int main(int argc, char **argv)
 	system("clear");
 	buf_open((unsigned char*)argv[1]);
 	aphexContentInit();
+	aphexMode = APHEX_COMMAND_MODE;
 	cursorX = APHEX_WIN_HEX_X;
 	cursorY = APHEX_WIN_HEX_Y;
 	while (!quit) {
