@@ -46,13 +46,18 @@ void aphexInputProcess()
 			break;
 
 		case (APHEX_INSERT_MODE):
-			if (aphexMode != APHEX_INSERT_MODE) {
+			if (aphexMode != APHEX_READONLY_MODE) {
 				aphexMode = APHEX_INSERT_MODE;
 			}
 			break;
 		case (APHEX_COMMAND_MODE):
 			if (aphexMode != APHEX_COMMAND_MODE) {
 				aphexMode = APHEX_COMMAND_MODE;
+			}
+			break;
+		case (APHEX_READONLY_MODE):
+			if (aphexMode != APHEX_READONLY_MODE) {
+				aphexMode = APHEX_READONLY_MODE;
 			}
 			break;
 		case (APHEX_DELETE_COMBUF):
@@ -83,7 +88,7 @@ void aphexInputProcess()
 
 aphexCom parseComBuf(char c)
 {
-	if (aphexMode == APHEX_COMMAND_MODE) {
+	if ((aphexMode == APHEX_COMMAND_MODE) || (aphexMode == APHEX_READONLY_MODE)) {
 		comNum = 1;
 		switch (c) {
 			/* commands working with comBuf */

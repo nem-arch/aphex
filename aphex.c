@@ -7,12 +7,17 @@ int main(int argc, char **argv)
 		printf("usage: %s <file>\n", argv[0]);
 		exit(EXIT_SUCCESS);
 	}
+	if (strcmp(argv[1], "-r") == 0) {
+		aphexMode = APHEX_READONLY_MODE;
+		buf_open((unsigned char*)argv[2]);
+	} else {
+		aphexMode = APHEX_COMMAND_MODE;
+		buf_open((unsigned char*)argv[1]);
+	}
 
 	quit = false;
 	system("clear");
-	buf_open((unsigned char*)argv[1]);
 	aphexContentInit();
-	aphexMode = APHEX_COMMAND_MODE;
 	cursorX = APHEX_WIN_HEX_X;
 	cursorY = APHEX_WIN_HEX_Y;
 	while (!quit) {

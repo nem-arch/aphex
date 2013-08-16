@@ -2,13 +2,19 @@
 
 void buf_open(unsigned char* fname)
 {
-	if ((buf.f = open((const char*)fname, O_RDWR)) < 0) {
+	int openMode = O_RDONLY;
+	int mmapMode = PROT_READ;
+	if (aphexMode != APHEX_READONLY_MODE) {
+		openMode = O_RDWR;
+		mmapMode = PROT_READ|PROT_WRITE;
+	}
+	if ((buf.f = open((const char*)fname, openMode)) < 0) {
 		perror("open");
 		exit(EXIT_FAILURE);
 	}
 	struct stat sb;
 	fstat(buf.f, &sb);
-	if ((buf.mem = (unsigned char*)mmap(NULL, sb.st_size, PROT_READ|PROT_WRITE, MAP_SHARED, buf.f, 0)) == MAP_FAILED) {
+	if ((buf.mem = (unsigned char*)mmap(NULL, sb.st_size, mmapMode, MAP_SHARED, buf.f, 0)) == MAP_FAILED) {
 		close(buf.f);
 		perror("mmap");
 		exit(EXIT_FAILURE);
