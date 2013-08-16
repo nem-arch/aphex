@@ -2,7 +2,7 @@
 
 void aphexWinInit(aphexWin *win, int x, int y, int w, int h)
 {
-	win->c = (char*)malloc(w*h);
+	win->c = (char*)malloc(w*h+w+h);
 	win->width = w;
 	win->height = h;
 	win->posx = x;
@@ -43,9 +43,9 @@ void aphexWinSetTermSize(aphexWin *win)
 	if ((aphexTerm.ws_row != win->height) && (aphexTerm.ws_col != win->width)) {
 		aphexContentFree();
 		aphexContentInit();
-		if (cursorY>aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT) {
-			buf.shiftOffset += cursorY - aphexTerm.ws_row + 3 + APHEX_WIN_BIN_HEIGHT + 1;
-			cursorY = aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT - 1;
+		if (cursorY > aphexWinMainBottom()) {
+			buf.shiftOffset += cursorY - aphexWinMainBottom() + 1;
+			cursorY = aphexWinMainBottom() - 1;
 		}
 		aphexCursorSet(cursorX, cursorY);
 	}
@@ -54,12 +54,12 @@ void aphexWinSetTermSize(aphexWin *win)
 void aphexWinDraw(aphexWin *win)
 {
 	aphexWinSetTermSize(&winBase);
-	aphexContentPrompt(&winBase);
 	aphexContentBase(&winBase);
 	aphexContentHex(&winHex);
 	aphexContentAddr(&winAddr);
 	aphexContentAscii(&winAscii);
 	aphexContentBin(&winBin);
+	aphexContentPrompt(&winPrompt);
 	for (int i=0; i<win->height; i++) {
 		for (int j=0; j<win->width; j++) {
 			printf("%c",win->c[j + (win->width)*i]);
@@ -76,16 +76,18 @@ bool aphexContentInit()
 	}
 
 	aphexWinInit(&winBase, 0, 0, aphexTerm.ws_col, aphexTerm.ws_row);
-	aphexWinInit(&winAddr, APHEX_WIN_ADDR_X, APHEX_WIN_ADDR_Y, APHEX_WIN_ADDR_WIDTH, aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT - 1);
-	aphexWinInit(&winHex, APHEX_WIN_HEX_X, APHEX_WIN_HEX_Y, APHEX_WIN_HEX_WIDTH, aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT - 1);
-	aphexWinInit(&winAscii, APHEX_WIN_ASCII_X, APHEX_WIN_ASCII_Y, APHEX_WIN_ASCII_WIDTH, aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT - 1);
-	aphexWinInit(&winBin, APHEX_WIN_BIN_X, aphexTerm.ws_row - 1 - APHEX_WIN_BIN_HEIGHT - 1, aphexTerm.ws_col, APHEX_WIN_BIN_HEIGHT);
+	aphexWinInit(&winPrompt, APHEX_WIN_PROMPT_X, aphexWinMainBottom() + APHEX_WIN_BIN_HEIGHT, aphexTerm.ws_col, APHEX_WIN_PROMPT_HEIGHT);
+	aphexWinInit(&winAddr, APHEX_WIN_ADDR_X, APHEX_WIN_ADDR_Y, APHEX_WIN_ADDR_WIDTH, aphexWinMainBottom() - 1);
+	aphexWinInit(&winHex, APHEX_WIN_HEX_X, APHEX_WIN_HEX_Y, APHEX_WIN_HEX_WIDTH, aphexWinMainBottom() - 1);
+	aphexWinInit(&winAscii, APHEX_WIN_ASCII_X, APHEX_WIN_ASCII_Y, APHEX_WIN_ASCII_WIDTH, aphexWinMainBottom() - 1);
+	aphexWinInit(&winBin, APHEX_WIN_BIN_X, aphexWinMainBottom(), aphexTerm.ws_col, APHEX_WIN_BIN_HEIGHT);
 	return true;
 }
 
 void aphexContentFree()
 {
 	free(winBase.c);
+	free(winPrompt.c);
 	free(winAddr.c);
 	free(winHex.c);
 	free(winAscii.c);
@@ -100,7 +102,7 @@ void aphexContentAddr(aphexWin *win)
 {
 	char line[APHEX_WIN_ADDR_WIDTH + 1];
 	for (int i=0; i<win->height; i++) {
-		snprintf(line, 11, "0x%.8X\n", i*16+buf.shiftOffset*16);
+		snprintf(line, APHEX_WIN_ADDR_WIDTH+1, "0x%.16lX\n", i*16+buf.shiftOffset*16);
 		strncpy(&(win->c[i*win->width]), line, APHEX_WIN_ADDR_WIDTH);
 	}
 	aphexWinToWin(&winBase, &winAddr);
@@ -170,18 +172,47 @@ void aphexContentAscii(aphexWin *win)
 
 void aphexContentBin(aphexWin *win)
 {
+	unsigned char b[win->width];
+	memset(b, ' ', win->width-1);
+	buf_memBin(b);
+	for (int i=0; i<win->width-1; i++) {
+		// only draw middle line
+		win->c[i+win->width + 1] = b[i];
+	}
+	win->c[win->width*1-1] = '\n';
+	win->c[win->width*2-1] = '\n';
+	win->c[win->width*3-1] = '\n';
+	aphexWinToWin(&winBase, &winBin);
 }
 
 void aphexContentPrompt(aphexWin *win)
 {
-	char p[aphexTerm.ws_col - 1];
-	sprintf(p," aphex [%c] [%.3i %.3i] 0x%.8X nibble: %s shift: %.3X j: %.8X %s\n",aphexMode,cursorX,cursorY,buf.offset,(buf.nibble?"HIGH":"LOW "),buf.shiftOffset,comNum,comBuf);
-	int i = 0;
-	while (1) {
-		if (p[i] == '\n') break;
-		win->c[(win->height-1)*win->width + i] = p[i];
-		i++;	
+	char p[win->width*win->height];
+	memset(p, '\n', win->width*win->height-1);
+	snprintf(p, win->width-1, " offset: 0x%.16lX nibble: %s goto: 0x%.16lX\n", buf.offset, (buf.nibble?"HIGH":"LOW "),comNum);
+	snprintf(&p[win->width], win->width-1, " aphex [%c] [%.3i %.3i] shift: %.16lX com: %s\n",aphexMode,cursorX,cursorY,buf.shiftOffset,comBuf);
+	//snprintf(win->c, (aphexTerm.ws_col-2)*2, p);
+	//snprintf(&win->c[(aphexTerm.ws_col-2)*2-1], 2, "\n");
+	
+	for (int i=0; i<win->height; i++) {
+		int j=0;
+		while (1) {
+			if (p[j+win->width*i]=='\n') break;
+			win->c[j+win->width*i] = p[j+win->width*i];
+			j++;
+		}
+	}
+	/*
+	for (int i=0; i<win->width*2; i++) {
+		win->c[i] = p[i];
 	}
 	win->c[(win->height*win->width)-1] = '\n';
+	*/
+	aphexWinToWin(&winBase, &winPrompt);
+}
+
+int aphexWinMainBottom()
+{
+	return (aphexTerm.ws_row - 2 - APHEX_WIN_PROMPT_HEIGHT - APHEX_WIN_BIN_HEIGHT);
 }
 

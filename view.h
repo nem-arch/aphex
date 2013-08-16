@@ -9,7 +9,7 @@
 // offset addresses at origin
 #define APHEX_WIN_ADDR_X (APHEX_WIN_ORIGIN_X)
 #define APHEX_WIN_ADDR_Y (APHEX_WIN_ORIGIN_Y)
-#define APHEX_WIN_ADDR_WIDTH (10)
+#define APHEX_WIN_ADDR_WIDTH (18)
 
 // hex window to the right of offsets
 #define APHEX_WIN_HEX_X (APHEX_WIN_ADDR_X + APHEX_WIN_ADDR_WIDTH + 2)
@@ -26,6 +26,10 @@
 // binary window at the bottom spanning full width
 #define APHEX_WIN_BIN_X (APHEX_WIN_ORIGIN_X)
 #define APHEX_WIN_BIN_HEIGHT (3)
+
+// prompt window at the bottom spanning full width
+#define APHEX_WIN_PROMPT_X (APHEX_WIN_ORIGIN_X)
+#define APHEX_WIN_PROMPT_HEIGHT (2)
 
 // WINDOW STRUCTURE AND FUNCTIONS
 
@@ -54,6 +58,7 @@ void aphexWinSetTermSize(aphexWin *win);
  */
 
 aphexWin winBase;
+aphexWin winPrompt;
 aphexWin winAddr;
 aphexWin winHex;
 aphexWin winAscii;
@@ -67,5 +72,8 @@ void aphexContentHex(aphexWin *win);
 void aphexContentAscii(aphexWin *win);
 void aphexContentBin(aphexWin *win);
 void aphexContentPrompt(aphexWin *win);
+
+/* returns y coordinate of main view bottom (hex, ascii, addr) */
+int aphexWinMainBottom();
 
 #endif // VIEW_H_INCLUDED

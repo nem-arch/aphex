@@ -11,6 +11,7 @@
 #include <string.h>
 #include <errno.h>
 #include <termios.h>
+#include <limits.h>
 
 typedef enum { true = 1, false = 0 } bool;
 typedef enum { APHEX_NIBBLE_HIGH = 1, APHEX_NIBBLE_LOW = 0 } APHEX_NIBBLE;

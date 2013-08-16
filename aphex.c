@@ -5,6 +5,7 @@ int main(int argc, char **argv)
 {
 	if (argc < 2 || (strcmp(argv[1], "-h") == 0)) {
 		printf("usage: %s <file>\n", argv[0]);
+		printf("maximum filesize on system: %lu MB",ULONG_MAX/1024/1024);
 		exit(EXIT_SUCCESS);
 	}
 	if (strcmp(argv[1], "-r") == 0) {

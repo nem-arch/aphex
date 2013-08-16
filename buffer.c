@@ -8,12 +8,22 @@ void buf_open(unsigned char* fname)
 		openMode = O_RDWR;
 		mmapMode = PROT_READ|PROT_WRITE;
 	}
+
 	if ((buf.f = open((const char*)fname, openMode)) < 0) {
 		perror("open");
 		exit(EXIT_FAILURE);
 	}
+
 	struct stat sb;
 	fstat(buf.f, &sb);
+
+	/* check filesize */
+	if (sb.st_size > ULONG_MAX) {
+		printf("file too large (%lu MB, max: %lu MB)",sb.st_size/1024/1024,ULONG_MAX/1024/1024);
+		close(buf.f);
+		exit(EXIT_SUCCESS);
+	}
+
 	if ((buf.mem = (unsigned char*)mmap(NULL, sb.st_size, mmapMode, MAP_SHARED, buf.f, 0)) == MAP_FAILED) {
 		close(buf.f);
 		perror("mmap");
@@ -36,7 +46,7 @@ void buf_close()
 
 void buf_setoffset(int offset)
 {
-	buf.nibble = APHEX_NIBBLE_LOW;
+	buf.nibble = APHEX_NIBBLE_HIGH;
 	if (offset < 0) {
 		buf.offset = 0;
 	}
@@ -54,10 +64,10 @@ void buf_edit(unsigned char c)
 		c = hexToNum(c);
 		char cur = buf.mem[buf.offset];
 		if (buf.nibble == APHEX_NIBBLE_HIGH) {
-			buf.mem[buf.offset] = (cur&0x0F)|(c<<4);
+			buf.mem[buf.offset] = ((cur&0x0F)|(c<<4));
 		}
 		else {
-			buf.mem[buf.offset] = (cur&0xF0)|c;
+			buf.mem[buf.offset] = ((cur&0xF0)|c);
 		}
 	}
 }
@@ -65,4 +75,11 @@ void buf_edit(unsigned char c)
 int buf_getoffset()
 {
 	return ((cursorX - APHEX_WIN_HEX_X)/3 + (cursorY - APHEX_WIN_HEX_Y)*16 + buf.shiftOffset*16);
+}
+
+void buf_memBin(unsigned char* byte)
+{
+	for (int i=0;i<8;i++) {
+		byte[8-i] = ((buf.mem[buf.offset]&(1<<i))?'1':'0');
+	}
 }

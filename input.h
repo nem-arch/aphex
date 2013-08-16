@@ -5,7 +5,7 @@ typedef enum { CURSOR_UP, CURSOR_DOWN, CURSOR_LEFT, CURSOR_RIGHT, CURSOR_BOTTOM,
 	APHEX_REDRAW, APHEX_INSERT_MODE = 'I', APHEX_COMMAND_MODE = 'C', APHEX_READONLY_MODE = 'R', APHEX_DELETE_COMBUF,  QUIT, NONE } aphexCom;
 
 char comBuf[128];
-int comNum;
+unsigned long comNum;
 int comIndex;
 void resetComBuf();
 
@@ -24,6 +24,7 @@ void aphexCursorTop();
 void aphexCursorBottom();
 void aphexCursorHome();
 void aphexCursorEnd();
+void aphexCursorSetByOffset(int o);
 
 /* catch user input, redraw window, set cursor */
 void aphexInputProcess();
