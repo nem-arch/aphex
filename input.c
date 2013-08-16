@@ -62,14 +62,14 @@ void aphexCursorDown(int y)
 		y += cursorY;
 		if (!cbyb(y)) {
 			// not in boundary
-			if (y < buf.memsize/16+buf.shiftOffset*16) {
+			if (buf_getoffset() + 16 < buf.memsize) {
 				// in mem boundary
 				buf.shiftOffset++;
 			}
 			return;
 		} else {
 			// in boundary
-			if (y > buf.memsize/16+buf.shiftOffset*16) {
+			if (buf_getoffset() + 16 > buf.memsize-1) {
 				return;
 			}
 		}
@@ -121,6 +121,7 @@ void aphexCursorRight(int x)
 			return;
 		} else {
 			// in boundary
+			if (buf_getoffset() + (buf.nibble^APHEX_NIBBLE_HIGH) > buf.memsize-1) return;
 			if ((x+1)%3) x++;
 		}
 		buf.nibble ^= APHEX_NIBBLE_HIGH;
