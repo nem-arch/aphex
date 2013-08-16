@@ -1,6 +1,12 @@
 #ifndef INPUT_H_INCLUDED
 #define INPUT_H_INCLUDED
 
+typedef enum { CURSOR_UP, CURSOR_DOWN, CURSOR_LEFT, CURSOR_RIGHT, CURSOR_BOTTOM, CURSOR_TOP, CURSOR_HOME, CURSOR_END, QUIT, NONE } aphexCom;
+
+char comBuf[128];
+int comNum;
+aphexCom parseComBuf(char c);
+
 bool quit;
 
 char getch();
@@ -9,6 +15,10 @@ int cursorX, cursorY;
 void aphexCursorSet(int x, int y);
 void aphexCursorDown(int y);
 void aphexCursorRight(int x);
+void aphexCursorTop();
+void aphexCursorBottom();
+void aphexCursorHome();
+void aphexCursorEnd();
 
 /* catch user input, redraw window, set cursor */
 void aphexInputProcess();

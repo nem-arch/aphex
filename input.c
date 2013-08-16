@@ -23,22 +23,133 @@ char getch()
 
 void aphexInputProcess()
 {
-	switch (getch()) {
-		case ('j'):
-			aphexCursorDown(1);
+	switch (parseComBuf(getch())) {
+		case (CURSOR_DOWN):
+			aphexCursorDown(comNum);
+			comBuf[0] = '\0';
+			comNum = 1;
 			break;
-		case ('k'):
-			aphexCursorDown(-1);
+		case (CURSOR_UP):
+			aphexCursorDown(-comNum);
+			comBuf[0] = '\0';
+			comNum = 1;
 			break;
-		case ('h'):
-			aphexCursorRight(-1);
+		case (CURSOR_LEFT):
+			aphexCursorRight(-comNum);
+			comBuf[0] = '\0';
+			comNum = 1;
 			break;
-		case ('l'):
-			aphexCursorRight(1);
+		case (CURSOR_RIGHT):
+			aphexCursorRight(comNum);
+			comBuf[0] = '\0';
+			comNum = 1;
 			break;
-		case ('q'):
+		case (QUIT):
 			quit = true;
 			break;
+		case (CURSOR_TOP):
+			aphexCursorTop();
+			break;
+		case (CURSOR_BOTTOM):
+			aphexCursorBottom();
+			break;
+		case (CURSOR_HOME):
+			aphexCursorHome();
+			break;
+		case (CURSOR_END):
+			aphexCursorEnd();
+			break;
+		case (NONE):
+			break;
+	}
+}
+
+aphexCom parseComBuf(char c)
+{
+	comNum = 1;
+	switch (c) {
+		/* commands working with comBuf */
+		case ('j'):
+			return CURSOR_DOWN;
+		case ('k'):
+			return CURSOR_UP;
+		case ('h'):
+			return CURSOR_LEFT;
+		case ('l'):
+			return CURSOR_RIGHT;
+		case ('g'):
+			return CURSOR_BOTTOM;
+
+		/* commands ignoring comBuf*/
+		case ('q'):
+			comBuf[0] = '\0';
+			return QUIT;
+		case ('G'):
+			comBuf[0] = '\0';
+			return CURSOR_TOP;
+		case ('0'):
+			if (comBuf[0]!='\0') return NONE;
+			comBuf[0] = '\0';
+			return CURSOR_HOME;
+		case ('$'):
+			comBuf[0] = '\0';
+			return CURSOR_END;
+		default:
+			if (isNum(c)) {
+				sprintf(comBuf,"%s%c\n",comBuf,c);
+				comNum = (c-'0');
+			}
+			return NONE;
+	}
+	return NONE;
+}
+
+void aphexCursorHome()
+{
+	if ((buf.offset&0x000000F) == 0x0) return;
+	buf.nibble = APHEX_NIBBLE_HIGH;
+	buf.offset &= 0xFFFFFFF0;
+	cursorX = APHEX_WIN_HEX_X;
+}
+
+void aphexCursorEnd()
+{
+	buf.nibble = APHEX_NIBBLE_LOW;
+	if (buf.offset + 16 < buf.memsize) {
+		if ((buf.offset&0x0000001F) == 0x1F) return;
+		// full line
+		buf.offset |= 0xF;
+		cursorX = APHEX_WIN_HEX_X + APHEX_WIN_HEX_WIDTH -2;
+	} else {
+		if ((buf.offset == buf.memsize-1) || ((buf.offset&0x0000001F) == 0x1F)) return;
+		// nonfull line
+		cursorX = APHEX_WIN_HEX_X + (buf.memsize-buf.offset-1)*3 +1;
+		buf.offset = (buf.offset/16)*16 + (buf.memsize-buf.offset-1);;
+	}
+}
+
+void aphexCursorTop()
+{
+	buf.shiftOffset = 0;
+	buf.nibble = APHEX_NIBBLE_HIGH;
+	buf.offset = 0;
+	cursorX = APHEX_WIN_HEX_X;
+	cursorY = APHEX_WIN_HEX_Y;
+}
+
+void aphexCursorBottom()
+{
+	buf.nibble = APHEX_NIBBLE_HIGH;
+	if (buf.memsize/16 < (aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT -1)) {
+		buf.shiftOffset = 0;
+		buf.offset = buf.memsize - buf.memsize%16;
+		cursorX = APHEX_WIN_HEX_X;
+		cursorY = (buf.memsize/16) + APHEX_WIN_HEX_Y;
+	} else {
+		buf.shiftOffset = buf.memsize/16 + (buf.memsize%16?1:0) - (aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT - 1);
+		buf.offset = buf.memsize - buf.memsize%16;
+		cursorX = APHEX_WIN_HEX_X;
+		cursorY = (aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT - 1);
 	}
 }
 
@@ -59,35 +170,42 @@ void aphexCursorSet(int x, int y)
 void aphexCursorDown(int y)
 {
 	if (y>0) {
-		y += cursorY;
-		if (!cbyb(y)) {
+		if (!cbyb(y+cursorY)) {
 			// not in boundary
-			if (buf_getoffset() + 16 < buf.memsize) {
+			if (buf_getoffset() + 16*y < buf.memsize) {
 				// in mem boundary
-				buf.shiftOffset++;
+				buf.shiftOffset+=y;
+				buf.offset = buf_getoffset();
 			}
 			return;
 		} else {
 			// in boundary
-			if (buf_getoffset() + 16 > buf.memsize-1) {
+			if (buf_getoffset() + 16*y > buf.memsize-1) {
+				// out of mem boundary
 				return;
 			}
 		}
-		cursorY = y;
+		cursorY += y;
 		buf.offset = buf_getoffset();
 		return;
 	}
 	if (y<0) {
-		y += cursorY;
-		if (!cbyt(y)) {
+		if (!cbyt(y+cursorY)) {
 			// not in boundary
-			if (y < buf.shiftOffset*16) {
+			if (buf_getoffset() + 16*y >= 0) {
 				// in mem boundary
-				buf.shiftOffset--;
+				buf.shiftOffset+=y;
+				buf.offset = buf_getoffset();
 			}
 			return;
+		} else {
+			// in boundary
+			if (buf_getoffset() + 16*y < 0) {
+				// out of mem boundary
+				return;
+			}
 		}
-		cursorY = y;
+		cursorY += y;
 		buf.offset = buf_getoffset();
 		return;
 	}

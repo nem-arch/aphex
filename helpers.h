@@ -4,6 +4,8 @@
 /* is char hexadecimal */
 bool isHex(unsigned char c);
 
+bool isNum(unsigned char c);
+
 /* char to number */
 unsigned char hexToNum(unsigned char);
 
