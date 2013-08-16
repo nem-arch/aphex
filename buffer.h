@@ -22,7 +22,7 @@ void buf_open(unsigned char* fname);
 void buf_close();
 
 /* set memindex */
-void buf_setoffset(int offset, APHEX_NIBBLE nibble);
+void buf_setoffset(int offset);
 
 /* edit mem at current index/nibble */
 void buf_edit(unsigned char c);

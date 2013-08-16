@@ -20,7 +20,7 @@ void buf_open(unsigned char* fname)
 		exit(EXIT_FAILURE);
 	}
 	buf.memsize = sb.st_size;
-	buf_setoffset(0, APHEX_NIBBLE_HIGH);
+	buf_setoffset(0);
 	buf.shiftOffset = 0;
 	buf.editmode = APHEX_HEX;
 	buf.controlmode = APHEX_INSERT;
@@ -34,19 +34,17 @@ void buf_close()
 	close(buf.f);
 }
 
-void buf_setoffset(int offset, APHEX_NIBBLE nibble)
+void buf_setoffset(int offset)
 {
+	buf.nibble = APHEX_NIBBLE_LOW;
 	if (offset < 0) {
-		//buf.offset = 0;
-		//buf.nibble = APHEX_NIBBLE_HIGH;
+		buf.offset = 0;
 	}
 	if ((offset >= 0) && (offset < buf.memsize)) {
 		buf.offset = offset;
-		buf.nibble = nibble;
 	}
 	if (offset >= buf.memsize) {
-		//buf.offset = buf.memsize;
-		//buf.nibble = APHEX_NIBBLE_LOW;
+		buf.offset = buf.memsize-1;
 	}
 }
 
