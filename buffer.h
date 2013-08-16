@@ -12,12 +12,6 @@ struct {
 	APHEX_EDITMODE editmode;
 } buf;
 
-/* is char hexadecimal */
-bool isHex(unsigned char c);
-
-/* char to number */
-unsigned char hexToNum(unsigned char);
-
 /* mmap file */
 void buf_open(unsigned char* fname);
 

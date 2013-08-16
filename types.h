@@ -20,5 +20,6 @@ typedef enum { APHEX_INSERT, APHEX_COMMAND } APHEX_CMODE;
 #include "buffer.h"
 #include "view.h"
 #include "input.h"
+#include "helpers.h"
 
 #endif // TYPES_H_INCLUDED

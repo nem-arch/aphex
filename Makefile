@@ -7,7 +7,7 @@ LDFLAGS			=
 LIBS			= 
 CFLAGS			= -Wall -ggdb -std=c99 -pedantic
 
-$(TARGET): aphex.c buffer.c view.c input.c
+$(TARGET): aphex.c buffer.c view.c input.c helpers.c
 	gcc $^ $(CFLAGS) -o $@
 
 clean:
