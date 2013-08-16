@@ -142,10 +142,8 @@ aphexCom parseComBuf(char c)
 
 void resetComBuf()
 {
-	free(comBuf);
 	comIndex = 0;
 	comNum = 1;
-	comBuf = (char*)malloc(128);
 	memset(comBuf,0,128);
 }
 
