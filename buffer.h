@@ -1,16 +1,19 @@
 #ifndef BUFFER_H_INCLUDED
 #define BUFFER_H_INCLUDED
 
-struct {
+typedef struct _aphexBuf {
 	char* fname;
 	int f;	// filedescriptor for mmap
 	unsigned char *mem;
 	int memsize;
-	int memindex;
+	int offset;
+	int shiftOffset;
 	APHEX_NIBBLE nibble;
 	APHEX_CMODE controlmode;
 	APHEX_EDITMODE editmode;
-} buf;
+} aphexBuf;
+
+aphexBuf buf;
 
 /* mmap file */
 void buf_open(unsigned char* fname);
@@ -19,9 +22,11 @@ void buf_open(unsigned char* fname);
 void buf_close();
 
 /* set memindex */
-void buf_setindex(int index, APHEX_NIBBLE nibble);
+void buf_setoffset(int offset, APHEX_NIBBLE nibble);
 
 /* edit mem at current index/nibble */
 void buf_edit(unsigned char c);
+
+int buf_getoffset();
 
 #endif // BUFFER_H_INCLUDED

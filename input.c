@@ -21,20 +21,20 @@ char getch()
 	return (buf);
 }
 
-void process_input()
+void aphexInputProcess()
 {
 	switch (getch()) {
 		case ('j'):
-			cursor_move(0,1);
+			aphexCursorDown(1);
 			break;
 		case ('k'):
-			cursor_move(0,-1);
+			aphexCursorDown(-1);
 			break;
 		case ('h'):
-			cursor_move(-1,0);
+			aphexCursorRight(-1);
 			break;
 		case ('l'):
-			cursor_move(1,0);
+			aphexCursorRight(1);
 			break;
 		case ('q'):
 			quit = true;
@@ -42,21 +42,104 @@ void process_input()
 	}
 }
 
-void cursor_set(int x, int y)
+void aphexCursorSet(int x, int y)
 {
-	if ((x <= aphexTerm.ws_col-1) && (x >= 0) && (y <= aphexTerm.ws_row-1) && (y >= 0)) {
+	if (cbxr(x) && cbxl(x) && cbyt(y) && cbyb(y)) {
 		char tput[128];
-		sprintf(tput,"tput cup %i %i",y,x);
+		if ((x - APHEX_WIN_HEX_X)/3<8)
+			sprintf(tput,"tput cup %i %i",y,x);
+		if ((x - APHEX_WIN_HEX_X)/3>=8)
+			sprintf(tput,"tput cup %i %i",y,x+1);
 		system(tput);
-		cursorX = x;
-		cursorY = y;
+		//cursorY = y;
+		//cursorX = x;
 	}
 }
 
-void cursor_move(int x, int y)
+void aphexCursorDown(int y)
 {
-	x += cursorX;
-	y += cursorY;
-	cursor_set(x,y);
+	if (y>0) {
+		y += cursorY;
+		if (!cbyb(y)) {
+			// not in boundary
+			if (y < buf.memsize/16+buf.shiftOffset*16) {
+				// in mem boundary
+				buf.shiftOffset++;
+			}
+			return;
+		} else {
+			// in boundary
+			if (y > buf.memsize/16+buf.shiftOffset*16) {
+				return;
+			}
+		}
+		cursorY = y;
+		return;
+	}
+	if (y<0) {
+		y += cursorY;
+		if (!cbyt(y)) {
+			// not in boundary
+			if (y < buf.shiftOffset*16) {
+				// in mem boundary
+				buf.shiftOffset--;
+			}
+			return;
+		}
+		cursorY = y;
+		return;
+	}
+	// should never fall through here
+}
+
+bool cbyt(int y)
+{
+	return (y >= APHEX_WIN_HEX_Y);
+}
+
+bool cbyb(int y)
+{
+	return (y <= aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT - 1);
+}
+
+bool cbxl(int x)
+{
+	return (x >= APHEX_WIN_HEX_X);
+}
+
+bool cbxr(int x)
+{
+	return (x <= APHEX_WIN_HEX_X + APHEX_WIN_HEX_WIDTH );
+}
+
+void aphexCursorRight(int x)
+{
+	if (x>0) {
+		x += cursorX;
+		if (!cbxr(x+2)) {
+			// not in boundary
+			return;
+		} else {
+			// in boundary
+			if ((x+1)%3) x++;
+		}
+		buf.nibble ^= APHEX_NIBBLE_HIGH;
+		cursorX = x;
+		return;
+	}
+	if (x<0) {
+		x += cursorX;
+		if (!cbxl(x)) {
+			// not in boundary
+			return;
+		} else {
+			// in boundary
+			if ((x-1)%3) x--;
+		}
+		buf.nibble ^= APHEX_NIBBLE_HIGH;
+		cursorX = x;
+		return;
+	}
+	// should never fall through here
 }
 

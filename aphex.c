@@ -12,14 +12,11 @@ int main(int argc, char **argv)
 	system("clear");
 	buf_open((unsigned char*)argv[1]);
 	aphexContentInit();
-	cursorX = cursorY = 0;
+	cursorX = APHEX_WIN_HEX_X;
+	cursorY = APHEX_WIN_HEX_Y;
 	while (!quit) {
-		aphexContentPrompt(&winBase);
-		aphexContentHex(&winHex);
-		aphexContentAddr(&winAddr);
-		aphexContentAscii(&winAscii);
 		aphexWinDraw(&winBase);
-		process_input();
+		aphexInputProcess();
 	}
 
 	buf_close();

@@ -13,7 +13,7 @@
 #include <termios.h>
 
 typedef enum { true = 1, false = 0 } bool;
-typedef enum { APHEX_NIBBLE_HIGH, APHEX_NIBBLE_LOW } APHEX_NIBBLE;
+typedef enum { APHEX_NIBBLE_HIGH = 1, APHEX_NIBBLE_LOW = 0 } APHEX_NIBBLE;
 typedef enum { APHEX_HEX, APHEX_ASCII } APHEX_EDITMODE;
 typedef enum { APHEX_INSERT, APHEX_COMMAND } APHEX_CMODE;
 
