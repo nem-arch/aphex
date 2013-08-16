@@ -40,24 +40,32 @@ void aphexWinClear(aphexWin *win)
 void aphexWinSetTermSize(aphexWin *win)
 {
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &aphexTerm);
-	win->width = aphexTerm.ws_col;
-	win->height = aphexTerm.ws_row;
+	if ((aphexTerm.ws_row != win->height) && (aphexTerm.ws_col != win->width)) {
+		aphexContentFree();
+		aphexContentInit();
+		if (cursorY>aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT) {
+			buf.shiftOffset += cursorY - aphexTerm.ws_row + 3 + APHEX_WIN_BIN_HEIGHT + 1;
+			cursorY = aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT - 1;
+		}
+		aphexCursorSet(cursorX, cursorY);
+	}
 }
 
 void aphexWinDraw(aphexWin *win)
 {
+	aphexWinSetTermSize(&winBase);
+	aphexContentPrompt(&winBase);
+	aphexContentBase(&winBase);
 	aphexContentHex(&winHex);
 	aphexContentAddr(&winAddr);
 	aphexContentAscii(&winAscii);
-	aphexContentPrompt(&winBase);
-	aphexWinSetTermSize(&winBase);
+	aphexContentBin(&winBin);
 	for (int i=0; i<win->height; i++) {
 		for (int j=0; j<win->width; j++) {
 			printf("%c",win->c[j + (win->width)*i]);
 		}
 	}
 	aphexCursorSet(cursorX, cursorY);
-	//aphexCursorSet(APHEX_WIN_HEX_X + ((buf.offset)%16)*3 + (buf.nibble^APHEX_NIBBLE_HIGH), buf.offset/16 + APHEX_WIN_HEX_Y);
 }
 
 void aphexContentInit()
@@ -69,15 +77,6 @@ void aphexContentInit()
 	aphexWinInit(&winHex, APHEX_WIN_HEX_X, APHEX_WIN_HEX_Y, APHEX_WIN_HEX_WIDTH, aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT - 1);
 	aphexWinInit(&winAscii, APHEX_WIN_ASCII_X, APHEX_WIN_ASCII_Y, APHEX_WIN_ASCII_WIDTH, aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT - 1);
 	aphexWinInit(&winBin, APHEX_WIN_BIN_X, aphexTerm.ws_row - 1 - APHEX_WIN_BIN_HEIGHT - 1, aphexTerm.ws_col, APHEX_WIN_BIN_HEIGHT);
-
-	aphexContentPrompt(&winBase);
-	aphexContentBase(&winBase);
-	aphexContentAddr(&winAddr);
-	aphexContentHex(&winHex);
-	aphexContentAscii(&winAscii);
-	aphexContentBin(&winBin);
-
-	aphexCursorSet(APHEX_WIN_HEX_X, APHEX_WIN_HEX_Y);
 }
 
 void aphexContentFree()

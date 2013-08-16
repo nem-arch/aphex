@@ -59,6 +59,9 @@ void aphexInputProcess()
 		case (CURSOR_END):
 			aphexCursorEnd();
 			break;
+		case (APHEX_REDRAW):
+			aphexWinSetTermSize(&winBase);
+			break;
 		case (NONE):
 			break;
 	}
@@ -81,7 +84,7 @@ aphexCom parseComBuf(char c)
 			return CURSOR_BOTTOM;
 
 		/* commands ignoring comBuf*/
-		case ('q'):
+		case ('Q'):
 			comBuf[0] = '\0';
 			return QUIT;
 		case ('G'):
@@ -94,6 +97,9 @@ aphexCom parseComBuf(char c)
 		case ('$'):
 			comBuf[0] = '\0';
 			return CURSOR_END;
+		case ('q'):
+			comBuf[0] = '\0';
+			return APHEX_REDRAW;
 		default:
 			if (isNum(c)) {
 				sprintf(comBuf,"%s%c\n",comBuf,c);
@@ -215,31 +221,29 @@ void aphexCursorDown(int y)
 void aphexCursorRight(int x)
 {
 	if (x>0) {
-		x += cursorX;
-		if (!cbxr(x+2)) {
+		if (!cbxr(x+2+cursorX)) {
 			// not in boundary
 			return;
 		} else {
 			// in boundary
 			if (buf_getoffset() + (buf.nibble^APHEX_NIBBLE_HIGH) > buf.memsize-1) return;
-			if ((x+1)%3) x++;
+			if ((x+cursorX+1)%3) x++;
 		}
 		buf.nibble ^= APHEX_NIBBLE_HIGH;
-		cursorX = x;
+		cursorX += x;
 		buf.offset = buf_getoffset();
 		return;
 	}
 	if (x<0) {
-		x += cursorX;
-		if (!cbxl(x)) {
+		if (!cbxl(x+cursorX)) {
 			// not in boundary
 			return;
 		} else {
 			// in boundary
-			if ((x-1)%3) x--;
+			if ((x+cursorX-1)%3) x--;
 		}
 		buf.nibble ^= APHEX_NIBBLE_HIGH;
-		cursorX = x;
+		cursorX += x;
 		buf.offset = buf_getoffset();
 		return;
 	}
