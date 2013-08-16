@@ -74,6 +74,7 @@ void aphexCursorDown(int y)
 			}
 		}
 		cursorY = y;
+		buf.offset = buf_getoffset();
 		return;
 	}
 	if (y<0) {
@@ -87,10 +88,47 @@ void aphexCursorDown(int y)
 			return;
 		}
 		cursorY = y;
+		buf.offset = buf_getoffset();
 		return;
 	}
 	// should never fall through here
 }
+
+void aphexCursorRight(int x)
+{
+	if (x>0) {
+		x += cursorX;
+		if (!cbxr(x+2)) {
+			// not in boundary
+			return;
+		} else {
+			// in boundary
+			if (buf_getoffset() + (buf.nibble^APHEX_NIBBLE_HIGH) > buf.memsize-1) return;
+			if ((x+1)%3) x++;
+		}
+		buf.nibble ^= APHEX_NIBBLE_HIGH;
+		cursorX = x;
+		buf.offset = buf_getoffset();
+		return;
+	}
+	if (x<0) {
+		x += cursorX;
+		if (!cbxl(x)) {
+			// not in boundary
+			return;
+		} else {
+			// in boundary
+			if ((x-1)%3) x--;
+		}
+		buf.nibble ^= APHEX_NIBBLE_HIGH;
+		cursorX = x;
+		buf.offset = buf_getoffset();
+		return;
+	}
+	// should never fall through here
+}
+
+/* boundary check helpers */
 
 bool cbyt(int y)
 {
@@ -110,37 +148,5 @@ bool cbxl(int x)
 bool cbxr(int x)
 {
 	return (x <= APHEX_WIN_HEX_X + APHEX_WIN_HEX_WIDTH );
-}
-
-void aphexCursorRight(int x)
-{
-	if (x>0) {
-		x += cursorX;
-		if (!cbxr(x+2)) {
-			// not in boundary
-			return;
-		} else {
-			// in boundary
-			if (buf_getoffset() + (buf.nibble^APHEX_NIBBLE_HIGH) > buf.memsize-1) return;
-			if ((x+1)%3) x++;
-		}
-		buf.nibble ^= APHEX_NIBBLE_HIGH;
-		cursorX = x;
-		return;
-	}
-	if (x<0) {
-		x += cursorX;
-		if (!cbxl(x)) {
-			// not in boundary
-			return;
-		} else {
-			// in boundary
-			if ((x-1)%3) x--;
-		}
-		buf.nibble ^= APHEX_NIBBLE_HIGH;
-		cursorX = x;
-		return;
-	}
-	// should never fall through here
 }
 

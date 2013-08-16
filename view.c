@@ -108,16 +108,30 @@ void aphexContentHex(aphexWin *win)
 	char line[APHEX_WIN_HEX_WIDTH + 1];
 	for (int i=0; i<win->height; i++) {
 		for (int j=0; j<8; j++) {
-			snprintf(&(line[j*3+0]), 2, "%.1X\n", c2nH(buf.mem[i*16+j + buf.shiftOffset*16]));
-			snprintf(&(line[j*3+1]), 2, "%.1X\n", c2nL(buf.mem[i*16+j + buf.shiftOffset*16]));
-			if (j<7) snprintf(&(line[j*3+2]), 2, " \n");
-			else snprintf(&(line[j*3+2]), 3, "  \n");
+			if ((i*16+j + buf.shiftOffset*16) > buf.memsize-1) {
+				snprintf(&(line[j*3+0]), 2, " \n");
+				snprintf(&(line[j*3+1]), 2, " \n");
+				if (j<7) snprintf(&(line[j*3+2]), 2, " \n");
+				else snprintf(&(line[j*3+2]), 3, "  \n");
+			} else {
+				snprintf(&(line[j*3+0]), 2, "%.1X\n", c2nH(buf.mem[i*16+j + buf.shiftOffset*16]));
+				snprintf(&(line[j*3+1]), 2, "%.1X\n", c2nL(buf.mem[i*16+j + buf.shiftOffset*16]));
+				if (j<7) snprintf(&(line[j*3+2]), 2, " \n");
+				else snprintf(&(line[j*3+2]), 3, "  \n");
+			}
 		}
 		for (int j=0; j<8; j++) {
-			snprintf(&(line[j*3+0+APHEX_WIN_HEX_BLOCK_WIDTH+2]), 2, "%.1X\n", c2nH(buf.mem[i*16+j+8 + buf.shiftOffset*16]));
-			snprintf(&(line[j*3+1+APHEX_WIN_HEX_BLOCK_WIDTH+2]), 2, "%.1X\n", c2nL(buf.mem[i*16+j+8 + buf.shiftOffset*16]));
-			if (j<7) snprintf(&(line[j*3+2+APHEX_WIN_HEX_BLOCK_WIDTH+2]), 2, " \n");
-			else snprintf(&(line[j*3+2+APHEX_WIN_HEX_BLOCK_WIDTH+2]), 2, "\n");
+			if ((i*16+j+8 + buf.shiftOffset*16) > buf.memsize-1) {
+				snprintf(&(line[j*3+0+APHEX_WIN_HEX_BLOCK_WIDTH+2]), 2, " \n");
+				snprintf(&(line[j*3+1+APHEX_WIN_HEX_BLOCK_WIDTH+2]), 2, " \n");
+				if (j<7) snprintf(&(line[j*3+2+APHEX_WIN_HEX_BLOCK_WIDTH+2]), 2, " \n");
+				else snprintf(&(line[j*3+2+APHEX_WIN_HEX_BLOCK_WIDTH+2]), 2, "\n");
+			} else {
+				snprintf(&(line[j*3+0+APHEX_WIN_HEX_BLOCK_WIDTH+2]), 2, "%.1X\n", c2nH(buf.mem[i*16+j+8 + buf.shiftOffset*16]));
+				snprintf(&(line[j*3+1+APHEX_WIN_HEX_BLOCK_WIDTH+2]), 2, "%.1X\n", c2nL(buf.mem[i*16+j+8 + buf.shiftOffset*16]));
+				if (j<7) snprintf(&(line[j*3+2+APHEX_WIN_HEX_BLOCK_WIDTH+2]), 2, " \n");
+				else snprintf(&(line[j*3+2+APHEX_WIN_HEX_BLOCK_WIDTH+2]), 2, "\n");
+			}
 		}
 		strncpy(&(win->c[i*win->width]), line, APHEX_WIN_HEX_WIDTH);
 	}
@@ -129,12 +143,22 @@ void aphexContentAscii(aphexWin *win)
 	char line[APHEX_WIN_ASCII_WIDTH + 1];
 	for (int i=0; i<win->height; i++) {
 		for (int j=0; j<8; j++) {
-			snprintf(&(line[j]), 2, "%c\n", c2a(buf.mem[i*16+j + buf.shiftOffset*16]));
-			if (j==7) snprintf(&(line[j+1]), 3, " \n");
+			if ((i*16+j + buf.shiftOffset*16) > buf.memsize-1) {
+				snprintf(&(line[j]), 2, " \n");
+				if (j==7) snprintf(&(line[j+1]), 3, " \n");
+			} else {
+				snprintf(&(line[j]), 2, "%c\n", c2a(buf.mem[i*16+j + buf.shiftOffset*16]));
+				if (j==7) snprintf(&(line[j+1]), 3, " \n");
+			}
 		}
 		for (int j=0; j<8; j++) {
-			snprintf(&(line[j+8+1]), 2, "%c\n", c2a(buf.mem[i*16+j+8 + buf.shiftOffset*16]));
-			if (j==7) snprintf(&(line[j+8+2]), 2, "\n");
+			if ((i*16+j+8 + buf.shiftOffset*16) > buf.memsize-1) {
+				snprintf(&(line[j+8+1]), 2, " \n");
+				if (j==7) snprintf(&(line[j+8+2]), 2, "\n");
+			} else {
+				snprintf(&(line[j+8+1]), 2, "%c\n", c2a(buf.mem[i*16+j+8 + buf.shiftOffset*16]));
+				if (j==7) snprintf(&(line[j+8+2]), 2, "\n");
+			}
 		}
 		strncpy(&(win->c[i*win->width]), line, APHEX_WIN_ASCII_WIDTH);
 	}
@@ -148,7 +172,7 @@ void aphexContentBin(aphexWin *win)
 void aphexContentPrompt(aphexWin *win)
 {
 	char p[aphexTerm.ws_col-1];
-	sprintf(p," aphex [%.3i %.3i]@0x%.8X @0x%.8X shift: %i>\n",cursorX,cursorY,buf.offset,buf_getoffset(),buf.shiftOffset);
+	sprintf(p," aphex [%.3i %.3i] 0x%.8X nibble: %s shift: %.3i>\n",cursorX,cursorY,buf.offset,(buf.nibble?"HIGH":"LOW "),buf.shiftOffset);
 	int i = 0;
 	while (1) {
 		if (p[i] == '\n') break;

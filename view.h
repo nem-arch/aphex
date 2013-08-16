@@ -25,7 +25,7 @@
 
 // binary window at the bottom spanning full width
 #define APHEX_WIN_BIN_X (APHEX_WIN_ORIGIN_X)
-#define APHEX_WIN_BIN_HEIGHT (2)
+#define APHEX_WIN_BIN_HEIGHT (3)
 
 // WINDOW STRUCTURE AND FUNCTIONS
 
