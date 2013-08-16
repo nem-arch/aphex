@@ -89,7 +89,6 @@ void aphexInputProcess()
 aphexCom parseComBuf(char c)
 {
 	if ((aphexMode == APHEX_COMMAND_MODE) || (aphexMode == APHEX_READONLY_MODE)) {
-		comNum = 1;
 		switch (c) {
 			/* commands working with comBuf */
 			case ('j'):
@@ -126,8 +125,13 @@ aphexCom parseComBuf(char c)
 				return APHEX_REDRAW;
 			default:
 				if (isNum(c)) {
-					sprintf(comBuf,"%s%c\n",comBuf,c);
-					comNum = (c-'0');
+					sprintf(comBuf,"%s%c",comBuf,c);
+					comNum = 0;
+					int powTen = 1;
+					for (int i=0; i<strlen(comBuf); i++) {
+						comNum += (comBuf[strlen(comBuf)-1-i]-'0')*powTen;
+						powTen*=10;
+					}
 				}
 				return NONE;
 		}
@@ -250,6 +254,7 @@ void aphexCursorDown(int y)
 void aphexCursorRight(int x)
 {
 	if (x>0) {
+		if (x>1) x=x*3-1;
 		if (!cbxr(x+2+cursorX)) {
 			// not in boundary
 			return;
@@ -264,6 +269,7 @@ void aphexCursorRight(int x)
 		return;
 	}
 	if (x<0) {
+		if (x<-1) x=x*3+1;
 		if (!cbxl(x+cursorX)) {
 			// not in boundary
 			return;

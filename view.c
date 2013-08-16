@@ -68,15 +68,19 @@ void aphexWinDraw(aphexWin *win)
 	aphexCursorSet(cursorX, cursorY);
 }
 
-void aphexContentInit()
+bool aphexContentInit()
 {
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &aphexTerm);
+	if (aphexTerm.ws_col < APHEX_WIN_ASCII_X + APHEX_WIN_ASCII_WIDTH) {
+		return false;
+	}
 
 	aphexWinInit(&winBase, 0, 0, aphexTerm.ws_col, aphexTerm.ws_row);
 	aphexWinInit(&winAddr, APHEX_WIN_ADDR_X, APHEX_WIN_ADDR_Y, APHEX_WIN_ADDR_WIDTH, aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT - 1);
 	aphexWinInit(&winHex, APHEX_WIN_HEX_X, APHEX_WIN_HEX_Y, APHEX_WIN_HEX_WIDTH, aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT - 1);
 	aphexWinInit(&winAscii, APHEX_WIN_ASCII_X, APHEX_WIN_ASCII_Y, APHEX_WIN_ASCII_WIDTH, aphexTerm.ws_row - 3 - APHEX_WIN_BIN_HEIGHT - 1);
 	aphexWinInit(&winBin, APHEX_WIN_BIN_X, aphexTerm.ws_row - 1 - APHEX_WIN_BIN_HEIGHT - 1, aphexTerm.ws_col, APHEX_WIN_BIN_HEIGHT);
+	return true;
 }
 
 void aphexContentFree()
@@ -171,7 +175,7 @@ void aphexContentBin(aphexWin *win)
 void aphexContentPrompt(aphexWin *win)
 {
 	char p[aphexTerm.ws_col-1];
-	sprintf(p," aphex [%c] [%.3i %.3i] 0x%.8X nibble: %s shift: %.3i> %.3i %s\n",aphexMode,cursorX,cursorY,buf.offset,(buf.nibble?"HIGH":"LOW "),buf.shiftOffset,comNum,comBuf);
+	sprintf(p," aphex [%c] [%.3i %.3i] 0x%.8X nibble: %s shift: %.3i j: %.8i",aphexMode,cursorX,cursorY,buf.offset,(buf.nibble?"HIGH":"LOW "),buf.shiftOffset,comNum);
 	int i = 0;
 	while (1) {
 		if (p[i] == '\n') break;

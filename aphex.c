@@ -16,8 +16,12 @@ int main(int argc, char **argv)
 	}
 
 	quit = false;
+	comNum = 1;
 	system("clear");
-	aphexContentInit();
+	if (!aphexContentInit()) {
+		printf("terminal too small\n");
+		exit(EXIT_SUCCESS);
+	}
 	cursorX = APHEX_WIN_HEX_X;
 	cursorY = APHEX_WIN_HEX_Y;
 	while (!quit) {

@@ -59,7 +59,7 @@ aphexWin winHex;
 aphexWin winAscii;
 aphexWin winBin;
 
-void aphexContentInit();
+bool aphexContentInit();
 void aphexContentFree();
 void aphexContentBase(aphexWin *win);
 void aphexContentAddr(aphexWin *win);
