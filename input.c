@@ -61,20 +61,36 @@ void aphexInputProcess()
 			break;
 		case (QUIT):
 			quit = true;
+			resetComBuf();
 			break;
 		case (CURSOR_TOP):
+			resetComBuf();
 			aphexCursorTop();
 			break;
 		case (CURSOR_BOTTOM):
-			aphexCursorBottom();
+			if (comIndex != 0) {
+				//buf.offset = comNum;
+				resetComBuf();
+				break;
+			}  else {
+				if (comBuf[0] == 'g') {
+					aphexCursorBottom();
+					resetComBuf();
+					break;
+				} else {
+					comBuf[0] = 'g';
+				}
+			}
 			break;
 		case (CURSOR_HOME):
 			aphexCursorHome();
 			break;
 		case (CURSOR_END):
+			resetComBuf();
 			aphexCursorEnd();
 			break;
 		case (APHEX_REDRAW):
+			resetComBuf();
 			aphexWinSetTermSize(&winBase);
 			break;
 		case (NONE):
@@ -104,16 +120,12 @@ aphexCom parseComBuf(char c)
 			case (0x1B):
 				return APHEX_DELETE_COMBUF;
 			case ('Q'):
-				resetComBuf();
 				return QUIT;
 			case ('G'):
-				resetComBuf();
 				return CURSOR_TOP;
 			case ('$'):
-				resetComBuf();
 				return CURSOR_END;
 			case ('q'):
-				resetComBuf();
 				return APHEX_REDRAW;
 			case ('0'):
 				if (comIndex == 0) {
