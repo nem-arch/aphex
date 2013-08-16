@@ -26,23 +26,19 @@ void aphexInputProcess()
 	switch (parseComBuf(getch())) {
 		case (CURSOR_DOWN):
 			aphexCursorDown(comNum);
-			comBuf[0] = '\0';
-			comNum = 1;
+			resetComBuf();
 			break;
 		case (CURSOR_UP):
 			aphexCursorDown(-comNum);
-			comBuf[0] = '\0';
-			comNum = 1;
+			resetComBuf();
 			break;
 		case (CURSOR_LEFT):
 			aphexCursorRight(-comNum);
-			comBuf[0] = '\0';
-			comNum = 1;
+			resetComBuf();
 			break;
 		case (CURSOR_RIGHT):
 			aphexCursorRight(comNum);
-			comBuf[0] = '\0';
-			comNum = 1;
+			resetComBuf();
 			break;
 
 		case (APHEX_INSERT_MODE):
@@ -61,7 +57,7 @@ void aphexInputProcess()
 			}
 			break;
 		case (APHEX_DELETE_COMBUF):
-			comBuf[0] = '\0';
+			resetComBuf();
 			break;
 		case (QUIT):
 			quit = true;
@@ -108,30 +104,31 @@ aphexCom parseComBuf(char c)
 			case (0x1B):
 				return APHEX_DELETE_COMBUF;
 			case ('Q'):
-				comBuf[0] = '\0';
+				resetComBuf();
 				return QUIT;
 			case ('G'):
-				comBuf[0] = '\0';
+				resetComBuf();
 				return CURSOR_TOP;
-			case ('0'):
-				if (comBuf[0]!='\0') return NONE;
-				comBuf[0] = '\0';
-				return CURSOR_HOME;
 			case ('$'):
-				comBuf[0] = '\0';
+				resetComBuf();
 				return CURSOR_END;
 			case ('q'):
-				comBuf[0] = '\0';
+				resetComBuf();
 				return APHEX_REDRAW;
+			case ('0'):
+				if (comIndex == 0) {
+					return CURSOR_HOME;
+				}
 			default:
 				if (isNum(c)) {
-					sprintf(comBuf,"%s%c",comBuf,c);
+					comBuf[comIndex] = c;
 					comNum = 0;
 					int powTen = 1;
-					for (int i=0; i<strlen(comBuf); i++) {
-						comNum += (comBuf[strlen(comBuf)-1-i]-'0')*powTen;
+					for (int i=0; i<comIndex+1; i++) {
+						comNum += (comBuf[comIndex - i]-'0')*powTen;
 						powTen*=10;
 					}
+					comIndex++;
 				}
 				return NONE;
 		}
@@ -141,6 +138,15 @@ aphexCom parseComBuf(char c)
 		buf_edit(c);
 	}
 	return NONE;
+}
+
+void resetComBuf()
+{
+	free(comBuf);
+	comIndex = 0;
+	comNum = 1;
+	comBuf = (char*)malloc(128);
+	memset(comBuf,0,128);
 }
 
 void aphexCursorHome()
@@ -234,6 +240,11 @@ void aphexCursorDown(int y)
 			if (buf_getoffset() + 16*y >= 0) {
 				// in mem boundary
 				buf.shiftOffset+=y;
+				if (buf.shiftOffset<0) {
+					// avoid negative shift and correct cursor
+					cursorY += buf.shiftOffset;
+					buf.shiftOffset = 0;
+				}
 				buf.offset = buf_getoffset();
 			}
 			return;

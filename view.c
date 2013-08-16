@@ -174,8 +174,8 @@ void aphexContentBin(aphexWin *win)
 
 void aphexContentPrompt(aphexWin *win)
 {
-	char p[aphexTerm.ws_col-1];
-	sprintf(p," aphex [%c] [%.3i %.3i] 0x%.8X nibble: %s shift: %.3i j: %.8i",aphexMode,cursorX,cursorY,buf.offset,(buf.nibble?"HIGH":"LOW "),buf.shiftOffset,comNum);
+	char p[aphexTerm.ws_col - 1];
+	sprintf(p," aphex [%c] [%.3i %.3i] 0x%.8X nibble: %s shift: %.3X j: %.8X %s\n",aphexMode,cursorX,cursorY,buf.offset,(buf.nibble?"HIGH":"LOW "),buf.shiftOffset,comNum,comBuf);
 	int i = 0;
 	while (1) {
 		if (p[i] == '\n') break;

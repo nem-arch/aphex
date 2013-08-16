@@ -17,6 +17,7 @@ int main(int argc, char **argv)
 
 	quit = false;
 	comNum = 1;
+	resetComBuf();
 	system("clear");
 	if (!aphexContentInit()) {
 		printf("terminal too small\n");

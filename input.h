@@ -4,8 +4,11 @@
 typedef enum { CURSOR_UP, CURSOR_DOWN, CURSOR_LEFT, CURSOR_RIGHT, CURSOR_BOTTOM, CURSOR_TOP, CURSOR_HOME, CURSOR_END,
 	APHEX_REDRAW, APHEX_INSERT_MODE = 'I', APHEX_COMMAND_MODE = 'C', APHEX_READONLY_MODE = 'R', APHEX_DELETE_COMBUF,  QUIT, NONE } aphexCom;
 
-char comBuf[128];
+char *comBuf;
 int comNum;
+int comIndex;
+void resetComBuf();
+
 aphexCom parseComBuf(char c);
 aphexCom aphexMode;
 
