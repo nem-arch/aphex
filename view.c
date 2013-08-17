@@ -18,7 +18,6 @@ void aphexWinToWin(aphexWin *base, aphexWin *win)
 	for (int i=0; i<win->height; i++) {
 		for (int j=0; j<win->width; j++) {
 			base->c[j + win->posx + (base->width) * (i + win->posy)] = win->c[j + (win->width)*i];
-			//base->c[j + (base->width) * (i)] = win->c[j + (win->width)*i]; 
 		}
 	}
 }
@@ -61,7 +60,6 @@ void aphexWinDraw(aphexWin *win)
 		for (int j=0; j<win->width; j++) {
 			printf("%c",win->c[j + (win->width)*i]);
 		}
-		//printf("\n");
 	}
 	aphexCursorSet(cursorX, cursorY);
 }
@@ -117,10 +115,6 @@ void aphexContentHex(aphexWin *win)
 				snprintf(&(line[j*3]), 4, "   ");
 			} else {
 				snprintf(&(line[j*3]), 4, "%X%X ", c2nH(buf.mem[offset]), c2nL(buf.mem[offset]));
-				//snprintf(&(line[j*3+0]), 2, "%c", c2nH(buf.mem[i*16+j + buf.shiftOffset*16]));
-				//snprintf(&(line[j*3+1]), 2, "%c", c2nL(buf.mem[i*16+j + buf.shiftOffset*16]));
-				//strncpy(&(line[j*3+2]), " ", 1);
-				//snprintf(&(line[j*3+2]), 2, " ");
 			}
 		}
 		strncpy(&(line[8*3]), " ", 1);
@@ -130,10 +124,6 @@ void aphexContentHex(aphexWin *win)
 				snprintf(&(line[j*3 + 8*3+1]), 4, "   ");
 			} else {
 				snprintf(&(line[j*3 + 8*3+1]), 4, "%X%X ", c2nH(buf.mem[offset]), c2nL(buf.mem[offset]));
-				//snprintf(&(line[j*3+0 + APHEX_WIN_HEX_BLOCK_WIDTH + 2]), 2, "%c", c2nH(buf.mem[i*16+j + buf.shiftOffset*16]));
-				//snprintf(&(line[j*3+1 + APHEX_WIN_HEX_BLOCK_WIDTH + 2]), 2, "%c", c2nL(buf.mem[i*16+j + buf.shiftOffset*16]));
-				//strncpy(&(line[j*3+2 + APHEX_WIN_HEX_BLOCK_WIDTH + 2]), " ", 1);
-				//snprintf(&(line[j*3+2]), 2, " ");
 			}
 		}
 		strncpy(&(win->c[i*win->width]), line, win->width);
