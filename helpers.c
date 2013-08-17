@@ -25,14 +25,14 @@ unsigned char hexToNum(unsigned char c)
 	return 0xFF;
 }
 
-unsigned char c2nH(unsigned char c)
+char c2nH(char c)
 {
-	return (c>>4);
+	return ((c>>4)&0x0F);
 }
 
-unsigned char c2nL(unsigned char c)
+char c2nL(char c)
 {
-	return (c&0xF);
+	return (c&0x0F);
 }
 
 char c2a(char c)

@@ -79,7 +79,11 @@ int buf_getoffset()
 
 void buf_memBin(unsigned char* byte)
 {
-	for (int i=0;i<8;i++) {
-		byte[8-i] = ((buf.mem[buf.offset]&(1<<i))?'1':'0');
+	for (int i=0;i<4;i++) {
+		byte[9-i] = ((buf.mem[buf.offset]&(1<<i))?'1':'0');
+	}
+	byte[4] = ' ';
+	for (int i=0;i<4;i++) {
+		byte[4-i] = ((buf.mem[buf.offset]&(1<<(i+4)))?'1':'0');
 	}
 }

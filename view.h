@@ -41,10 +41,10 @@ typedef struct _aphexWin {
 	char *c;
 } aphexWin;
 
-void aphexWinInit(aphexWin *win, int x, int y, int w, int h);
+void aphexWinInit(aphexWin *win, int x, int y, int w, int h, bool lf);
 void aphexWinPut(aphexWin *win, char* c, int x, int y);
 void aphexWinToWin(aphexWin *base, aphexWin *win);
-void aphexWinClear(aphexWin *win);
+void aphexWinClear(aphexWin *win, bool lf);
 void aphexWinDraw(aphexWin *win);
 
 /* termsize buffer for ioctl */

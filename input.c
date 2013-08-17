@@ -233,8 +233,6 @@ void aphexCursorSet(int x, int y)
 		if ((x - APHEX_WIN_HEX_X)/3>=8)
 			sprintf(tput,"tput cup %i %i",y,x+1);
 		system(tput);
-		//cursorY = y;
-		//cursorX = x;
 	}
 }
 
@@ -254,11 +252,14 @@ void aphexCursorSetByOffset(int o)
 	int x = buf.offset%16;
 	int y = buf.offset/16;
 	
-	cursorX = APHEX_WIN_HEX_X;
-	aphexCursorRight(x);
 	cursorY = APHEX_WIN_HEX_Y;
-
 	buf.shiftOffset = y;
+	cursorX = APHEX_WIN_HEX_X;
+	x*=2;
+	while(x>0) {
+		aphexCursorRight(1);
+		x--;
+	}
 }
 
 void aphexCursorDown(int y)
@@ -314,7 +315,6 @@ void aphexCursorDown(int y)
 void aphexCursorRight(int x)
 {
 	if (x>0) {
-		if (x>1) x=x*3-1;
 		if (!cbxr(x+2+cursorX)) {
 			// not in boundary
 			return;
@@ -329,7 +329,6 @@ void aphexCursorRight(int x)
 		return;
 	}
 	if (x<0) {
-		if (x<-1) x=x*3+1;
 		if (!cbxl(x+cursorX)) {
 			// not in boundary
 			return;
