@@ -102,7 +102,7 @@ void aphexContentBase(aphexWin *win)
 
 void aphexContentAddr(aphexWin *win)
 {
-	char line[APHEX_WIN_ADDR_WIDTH] = { ' ' };
+	char line[APHEX_WIN_ADDR_WIDTH+1] = { ' ' };
 	for (int i=0; i<win->height; i++) {
 		snprintf(line, win->width+1, "0x%.16lX", i*16+buf.shiftOffset*16);
 		strncpy(&(win->c[i*win->width]), line, win->width);
