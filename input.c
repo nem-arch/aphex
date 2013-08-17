@@ -25,21 +25,19 @@ void aphexInputProcess()
 {
 	switch (parseComBuf(getch())) {
 		case (CURSOR_DOWN):
-			aphexCursorDown(comNum);
+			aphexCursorSetYDown(comNum);
 			resetComBuf();
 			break;
 		case (CURSOR_UP):
-			aphexCursorDown(-comNum);
+			aphexCursorSetYUp(comNum);
 			resetComBuf();
 			break;
 		case (CURSOR_LEFT):
-			if (comNum>1) aphexCursorSetByOffset(buf.offset-comNum);
-			else aphexCursorRight(-1);
+			aphexCursorSetXLeft(comNum);
 			resetComBuf();
 			break;
 		case (CURSOR_RIGHT):
-			if (comNum>1) aphexCursorSetByOffset(buf.offset+comNum);
-			else aphexCursorRight(1);
+			aphexCursorSetXRight(comNum);
 			resetComBuf();
 			break;
 
@@ -50,9 +48,7 @@ void aphexInputProcess()
 			break;
 		case (APHEX_COMMAND_MODE):
 			if (aphexMode != APHEX_COMMAND_MODE) {
-				aphexMode = APHEX_COMMAND_MODE;
-			}
-			break;
+				aphexMode = APHEX_COMMAND_MODE; } break;
 		case (APHEX_READONLY_MODE):
 			if (aphexMode != APHEX_READONLY_MODE) {
 				aphexMode = APHEX_READONLY_MODE;
@@ -175,9 +171,59 @@ void resetComBuf()
 	memset(comBuf,' ',128);
 }
 
+void aphexCursorSetXRight(long o)
+{
+	if (o > 16 - (buf.offset%16)) {
+		aphexCursorEnd();
+	} else {
+		if (o>1) o*=2;
+		while (o>0) {
+			aphexCursorRight(1);
+			o--;
+		}
+	}
+}
+
+void aphexCursorSetXLeft(long o)
+{
+	if (o > ((buf.offset+1)%16)) {
+		aphexCursorHome();
+	} else {
+		if (o>1) o*=2;
+		while (o>0) {
+			aphexCursorRight(-1);
+			o--;
+		}
+	}
+}
+
+void aphexCursorSetYUp(long o)
+{
+	if (o > (buf.offset/16)) {
+		aphexCursorTop();
+	} else {
+		while (o>0) {
+			aphexCursorDown(-1);
+			o--;
+		}
+	}
+}
+
+void aphexCursorSetYDown(long o)
+{
+	if (o > ((buf.memsize-1 - buf.offset)/16)) {
+		aphexCursorBottom();
+	} else {
+		while (o>0) {
+			aphexCursorDown(1);
+			o--;
+		}
+	}
+}
+
 void aphexCursorHome()
 {
-	if ((buf.offset&0x000000F) == 0x0) return;
+	if ((buf.offset%16) == 0x0) return;
 	buf.nibble = APHEX_NIBBLE_HIGH;
 	buf.offset &= 0xFFFFFFF0;
 	cursorX = APHEX_WIN_HEX_X;
@@ -238,30 +284,27 @@ void aphexCursorSet(int x, int y)
 	}
 }
 
-void aphexCursorSetByOffset(int o)
+void aphexCursorSetByOffset(long o)
 {
-	buf_setoffset(o);
+	if (buf.nibble == APHEX_NIBBLE_LOW) {
+		aphexCursorRight(-1);
+	}
+	long x = ((o%16) - (buf.offset%16));
+	long y = ((o - buf.offset)/16);
 
-	if (buf.offset == 0) {
-		aphexCursorTop();
-		return;
+	if (y>0) {
+		aphexCursorSetYDown(y);
+	} else {
+		aphexCursorSetYUp(-y);
 	}
-	if (buf.offset == buf.memsize-1) {
-		aphexCursorBottom();
-		return;
+	if (x>0) {
+		aphexCursorSetXRight(x);
+		if (y<0) aphexCursorDown(-1);
+	} else {
+		aphexCursorSetXLeft(-x);
+		if (y>0) aphexCursorDown(1);
 	}
-
-	int x = buf.offset%16;
-	int y = buf.offset/16;
-	
-	cursorY = APHEX_WIN_HEX_Y;
-	buf.shiftOffset = y;
-	cursorX = APHEX_WIN_HEX_X;
-	x*=2;
-	while(x>0) {
-		aphexCursorRight(1);
-		x--;
-	}
+	return;
 }
 
 void aphexCursorDown(int y)

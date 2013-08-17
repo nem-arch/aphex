@@ -24,7 +24,12 @@ void aphexCursorTop();
 void aphexCursorBottom();
 void aphexCursorHome();
 void aphexCursorEnd();
-void aphexCursorSetByOffset(int o);
+void aphexCursorSetByOffset(long o);
+
+void aphexCursorSetXRight(long o);
+void aphexCursorSetXLeft(long o);
+void aphexCursorSetYUp(long o);
+void aphexCursorSetYDown(long o);
 
 /* catch user input, redraw window, set cursor */
 void aphexInputProcess();

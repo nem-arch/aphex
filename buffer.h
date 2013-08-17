@@ -5,9 +5,9 @@ typedef struct _aphexBuf {
 	char* fname;
 	int f;	// filedescriptor for mmap
 	unsigned char *mem;
-	unsigned long memsize;
-	unsigned long offset;
-	unsigned long shiftOffset;
+	long memsize;
+	long offset;
+	long shiftOffset;
 	APHEX_NIBBLE nibble;
 	APHEX_CMODE controlmode;
 	APHEX_EDITMODE editmode;
