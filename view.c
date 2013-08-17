@@ -34,7 +34,10 @@ void aphexWinClear(aphexWin *win, bool lf)
 
 void aphexWinSetTermSize(aphexWin *win)
 {
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &aphexTerm);
+	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &aphexTerm)<0) {
+		perror("ioctl");
+		exit(EXIT_FAILURE);
+	}
 	if ((aphexTerm.ws_row != win->height) && (aphexTerm.ws_col != win->width)) {
 		aphexContentFree();
 		aphexContentInit();
@@ -66,7 +69,10 @@ void aphexWinDraw(aphexWin *win)
 
 bool aphexContentInit()
 {
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &aphexTerm);
+	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &aphexTerm)<0) {
+		perror("ioctl");
+		exit(EXIT_FAILURE);
+	}
 	if (aphexTerm.ws_col < APHEX_WIN_ASCII_X + APHEX_WIN_ASCII_WIDTH) {
 		return false;
 	}
