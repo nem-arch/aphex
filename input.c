@@ -33,11 +33,11 @@ void aphexInputProcess()
 			resetComBuf();
 			break;
 		case (CURSOR_LEFT):
-			aphexCursorRight(-comNum);
+			aphexCursorSetByOffset(buf.offset-comNum);
 			resetComBuf();
 			break;
 		case (CURSOR_RIGHT):
-			aphexCursorRight(comNum);
+			aphexCursorSetByOffset(buf.offset+comNum);
 			resetComBuf();
 			break;
 
