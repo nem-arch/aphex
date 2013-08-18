@@ -36,9 +36,9 @@ void aphexCursorSetYDown(long o);
 /* catch user input, redraw window, set cursor */
 void aphexInputProcess();
 
-bool cbyt(int y);
-bool cbyb(int y);
-bool cbxl(int x);
-bool cbxr(int x);
+bool aphexCursorHexBorderYTop(int y);
+bool aphexCursorHexBorderYBottom(int y);
+bool aphexCursorHexBorderXLeft(int x);
+bool aphexCursorHexBorderXRight(int x);
 
 #endif // INPUT_H_INCLUDED

@@ -177,6 +177,8 @@ void resetComBuf()
 	memset(comBuf,' ',128);
 }
 
+/* WINDOW UNDEPENDENT MOVEMENT */
+
 void aphexCursorSetXRight(long o)
 {
 	if (o > 16 - (buf.offset%16)) {
@@ -278,16 +280,6 @@ void aphexCursorBottom()
 	}
 }
 
-void aphexCursorSet(int x, int y)
-{
-	if (cbxr(x) && cbxl(x) && cbyt(y) && cbyb(y)) {
-		if ((x - APHEX_WIN_HEX_X)/3<8)
-			printf("\033[%i;%iH",y,x);
-		if ((x - APHEX_WIN_HEX_X)/3>=8)
-			printf("\033[%i;%iH",y,x+1);
-	}
-}
-
 void aphexCursorSetByOffset(long o)
 {
 	if (buf.nibble == APHEX_NIBBLE_LOW) {
@@ -311,10 +303,26 @@ void aphexCursorSetByOffset(long o)
 	return;
 }
 
+/* WINDOW DEPENDENT MOVEMENT */
+
+void aphexCursorSet(int x, int y)
+{
+	char tput[128];
+	if (aphexCursorHexBorderXRight(x) && aphexCursorHexBorderXLeft(x) && aphexCursorHexBorderYTop(y) && aphexCursorHexBorderYBottom(y)) {
+		if ((x - APHEX_WIN_HEX_X)/3<8)
+			sprintf(tput,"tput cup %i %i",y,x);
+			//printf("\033[1;1H",y,x);
+		if ((x - APHEX_WIN_HEX_X)/3>=8)
+			sprintf(tput,"tput cup %i %i",y,x+1);
+			//printf("\033[1;1H",y,x+1);
+		system(tput);
+	}
+}
+
 void aphexCursorDown(int y)
 {
 	if (y>0) {
-		if (!cbyb(y+cursorY)) {
+		if (!aphexCursorHexBorderYBottom(y+cursorY)) {
 			// not in boundary
 			if (buf_getoffset() + 16*y < buf.memsize) {
 				// in mem boundary
@@ -334,7 +342,7 @@ void aphexCursorDown(int y)
 		return;
 	}
 	if (y<0) {
-		if (!cbyt(y+cursorY)) {
+		if (!aphexCursorHexBorderYTop(y+cursorY)) {
 			// not in boundary
 			if (buf_getoffset() + 16*y >= 0) {
 				// in mem boundary
@@ -364,7 +372,7 @@ void aphexCursorDown(int y)
 void aphexCursorRight(int x)
 {
 	if (x>0) {
-		if (!cbxr(x+2+cursorX)) {
+		if (!aphexCursorHexBorderXRight(x+2+cursorX)) {
 			// not in boundary
 			return;
 		} else {
@@ -378,7 +386,7 @@ void aphexCursorRight(int x)
 		return;
 	}
 	if (x<0) {
-		if (!cbxl(x+cursorX)) {
+		if (!aphexCursorHexBorderXLeft(x+cursorX)) {
 			// not in boundary
 			return;
 		} else {
@@ -395,22 +403,22 @@ void aphexCursorRight(int x)
 
 /* boundary check helpers */
 
-bool cbyt(int y)
+bool aphexCursorHexBorderYTop(int y)
 {
 	return (y >= APHEX_WIN_HEX_Y);
 }
 
-bool cbyb(int y)
+bool aphexCursorHexBorderYBottom(int y)
 {
 	return (y < aphexWinMainBottom());
 }
 
-bool cbxl(int x)
+bool aphexCursorHexBorderXLeft(int x)
 {
 	return (x >= APHEX_WIN_HEX_X);
 }
 
-bool cbxr(int x)
+bool aphexCursorHexBorderXRight(int x)
 {
 	return (x <= APHEX_WIN_HEX_X + APHEX_WIN_HEX_WIDTH );
 }

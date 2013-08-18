@@ -60,19 +60,27 @@ void buf_setoffset(int offset)
 
 void buf_edit(unsigned char c)
 {
-	if (isHex(c)) {
-		c = hexToNum(c);
-		char cur = buf.mem[buf.offset];
-		if (buf.nibble == APHEX_NIBBLE_HIGH) {
-			buf.mem[buf.offset] = ((cur&0x0F)|(c<<4));
-		}
-		else {
-			buf.mem[buf.offset] = ((cur&0xF0)|c);
-		}
+	switch (aphexEditMode) {
+		case (APHEX_EDIT_HEX):
+			if (isHex(c)) {
+				c = hexToNum(c);
+				char cur = buf.mem[buf.offset];
+				if (buf.nibble == APHEX_NIBBLE_HIGH) {
+					buf.mem[buf.offset] = ((cur&0x0F)|(c<<4));
+				}
+				else {
+					buf.mem[buf.offset] = ((cur&0xF0)|c);
+				}
+			}
+			break;
+		case (APHEX_EDIT_BIN):
+			break;
+		case (APHEX_EDIT_ASCII):
+			break;
 	}
 }
 
-int buf_getoffset()
+long buf_getoffset()
 {
 	return ((cursorX - APHEX_WIN_HEX_X)/3 + (cursorY - APHEX_WIN_HEX_Y)*16 + buf.shiftOffset*16);
 }

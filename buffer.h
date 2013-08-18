@@ -21,14 +21,16 @@ void buf_open(unsigned char* fname);
 /* munmap */
 void buf_close();
 
-/* set memindex */
+/* set buf.offset */
 void buf_setoffset(int offset);
 
 /* edit mem at current index/nibble */
 void buf_edit(unsigned char c);
 
-int buf_getoffset();
+/* DEPRECATED - return current buf.offset */
+long buf_getoffset();
 
-void buf_memBin();
+/* write 9 bytes back to *byte (2 nibbles, 1 space) */
+void buf_memBin(unsigned char *byte);
 
 #endif // BUFFER_H_INCLUDED
