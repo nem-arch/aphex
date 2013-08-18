@@ -41,4 +41,9 @@ bool aphexCursorHexBorderYBottom(int y);
 bool aphexCursorHexBorderXLeft(int x);
 bool aphexCursorHexBorderXRight(int x);
 
+bool aphexCursorAsciiBorderYTop(int y);
+bool aphexCursorAsciiBorderYBottom(int y);
+bool aphexCursorAsciiBorderXLeft(int x);
+bool aphexCursorAsciiBorderXRight(int x);
+
 #endif // INPUT_H_INCLUDED

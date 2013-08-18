@@ -420,3 +420,23 @@ bool aphexCursorHexBorderXRight(int x)
 	return (x <= APHEX_WIN_HEX_X + APHEX_WIN_HEX_WIDTH );
 }
 
+bool aphexCursorAsciiBorderYTop(int y)
+{
+	return (y >= APHEX_WIN_ASCII_Y);
+}
+
+bool aphexCursorAsciiBorderYBottom(int y)
+{
+	return (y < aphexWinMainBottom());
+}
+
+bool aphexCursorAsciiBorderXLeft(int x)
+{
+	return (x >= APHEX_WIN_ASCII_X);
+}
+
+bool aphexCursorAsciiBorderXRight(int x)
+{
+	return (x <= APHEX_WIN_ASCII_X + APHEX_WIN_ASCII_WIDTH );
+}
+
