@@ -24,7 +24,8 @@
 #define APHEX_WIN_ASCII_WIDTH (APHEX_WIN_ASCII_BLOCK_WIDTH*2 + 1)
 
 // binary window at the bottom spanning full width
-#define APHEX_WIN_BIN_X (APHEX_WIN_ORIGIN_X)
+#define APHEX_WIN_BIN_X (APHEX_WIN_HEX_X)
+#define APHEX_WIN_BIN_WIDTH (APHEX_WIN_HEX_WIDTH)
 #define APHEX_WIN_BIN_HEIGHT (3)
 
 // prompt window at the bottom spanning full width

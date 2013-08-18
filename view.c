@@ -86,7 +86,7 @@ bool aphexContentInit()
 	aphexWinInit(&winAddr, APHEX_WIN_ADDR_X, APHEX_WIN_ADDR_Y, APHEX_WIN_ADDR_WIDTH, aphexWinMainBottom() - 1, false);
 	aphexWinInit(&winHex, APHEX_WIN_HEX_X, APHEX_WIN_HEX_Y, APHEX_WIN_HEX_WIDTH, aphexWinMainBottom() - 1, false);
 	aphexWinInit(&winAscii, APHEX_WIN_ASCII_X, APHEX_WIN_ASCII_Y, APHEX_WIN_ASCII_WIDTH, aphexWinMainBottom() - 1, false);
-	aphexWinInit(&winBin, APHEX_WIN_BIN_X, aphexWinMainBottom(), aphexTerm.ws_col - 2, APHEX_WIN_BIN_HEIGHT, false);
+	aphexWinInit(&winBin, APHEX_WIN_BIN_X, aphexWinMainBottom(), APHEX_WIN_BIN_WIDTH, APHEX_WIN_BIN_HEIGHT, false);
 	return true;
 }
 
