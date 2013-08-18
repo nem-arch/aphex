@@ -211,8 +211,11 @@ void aphexCursorSetXRight(long o)
 			aphexCursorRight(1);
 			break;
 		case (APHEX_EDIT_HEX):
-			if (o > 16 - (buf.offset%16)) {
-				aphexCursorEnd();
+			if (o > 15 - (buf.offset%16) + 1 - (buf.nibble^APHEX_NIBBLE_HIGH)) {
+				if ((aphexMode == APHEX_INSERT_MODE)&&(aphexEditForward)) {
+					aphexCursorHome();
+					aphexCursorDown(1);
+				}
 			} else {
 				if (o>1) o*=2;
 				while (o>0) {
@@ -244,8 +247,11 @@ void aphexCursorSetXLeft(long o)
 			aphexCursorRight(-1);
 			break;
 		case (APHEX_EDIT_HEX):
-			if (o > ((buf.offset-1)%16)) {
-					aphexCursorHome();
+			if (o > ((buf.offset)%16) + (buf.nibble^APHEX_NIBBLE_HIGH)) {
+				if ((aphexMode == APHEX_INSERT_MODE)&&(aphexEditForward)) {
+					aphexCursorDown(-1);
+					aphexCursorEnd();
+				}
 			} else {
 				if (o>1) o*=2;
 				while (o>0) {
