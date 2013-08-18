@@ -177,11 +177,20 @@ aphexCom parseComBuf(char c)
 			if (c==0x1B) {
 				return APHEX_COMMAND_MODE;
 			}
+			if (c==0x09) {
+				return APHEX_CYCLE_EDIT_MODE;
+			}
 			if (c=='Q') {
 				return QUIT;
 			}
+			if ((c==0x7F)&&(aphexEditForward)) {
+				return CURSOR_LEFT;
+			}
 		}
 		buf_edit(c);
+		if ((aphexEditMode == APHEX_EDIT_ASCII)&&(aphexEditForward)) {
+			return CURSOR_RIGHT;
+		}
 	}
 	return NONE;
 }
@@ -213,8 +222,11 @@ void aphexCursorSetXRight(long o)
 			}
 			break;
 		case (APHEX_EDIT_ASCII):
-			if (o > 16 - (buf.offset%16)) {
-				aphexCursorEnd();
+			if (o > 15 - (buf.offset%16)) {
+				if ((aphexMode == APHEX_INSERT_MODE)&&(aphexEditForward)) {
+					aphexCursorHome();
+					aphexCursorDown(1);
+				}
 			} else {
 				while (o>0) {
 					aphexCursorRight(1);
@@ -233,7 +245,7 @@ void aphexCursorSetXLeft(long o)
 			break;
 		case (APHEX_EDIT_HEX):
 			if (o > ((buf.offset-1)%16)) {
-				aphexCursorHome();
+					aphexCursorHome();
 			} else {
 				if (o>1) o*=2;
 				while (o>0) {
@@ -243,8 +255,11 @@ void aphexCursorSetXLeft(long o)
 			}
 			break;
 		case (APHEX_EDIT_ASCII):
-			if (o > ((buf.offset-1)%16)) {
-				aphexCursorHome();
+			if (o > ((buf.offset)%16)) {
+				if ((aphexMode == APHEX_INSERT_MODE)&&(aphexEditForward)) {
+					aphexCursorDown(-1);
+					aphexCursorEnd();
+				}
 			} else {
 				while (o>0) {
 					aphexCursorRight(-1);

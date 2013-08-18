@@ -35,6 +35,7 @@ int main(int argc, char **argv)
 	}
 
 	aphexEditMode = APHEX_EDIT_HEX;
+	aphexEditForward = true;
 	quit = false;
 	comNum = 1;
 	resetComBuf();

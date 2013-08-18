@@ -1,15 +1,14 @@
 #ifndef INPUT_H_INCLUDED
 #define INPUT_H_INCLUDED
 
-typedef enum { APHEX_EDIT_ASCII = 'A',
-	APHEX_EDIT_BIN = 'B',
-	APHEX_COMMAND_MODE = 'C',
-	APHEX_EDIT_HEX = 'H',
-	APHEX_INSERT_MODE = 'I',
+typedef enum { APHEX_EDIT_ASCII = 'A', APHEX_EDIT_BIN = 'B', APHEX_EDIT_HEX = 'H',
+	APHEX_COMMAND_MODE = 'C', APHEX_INSERT_MODE = 'I',
 	APHEX_READONLY_MODE = 'R',
+	APHEX_CYCLE_EDIT_MODE,
 	CURSOR_UP, CURSOR_DOWN, CURSOR_LEFT, CURSOR_RIGHT, CURSOR_BOTTOM, CURSOR_TOP, CURSOR_HOME, CURSOR_END,
 	APHEX_REDRAW, APHEX_DELETE_COMBUF,
-	APHEX_CYCLE_EDIT_MODE, QUIT, NONE } aphexCom;
+	QUIT, NONE
+} aphexCom;
 
 char comBuf[128];
 unsigned long comNum;
@@ -19,6 +18,7 @@ void resetComBuf();
 aphexCom parseComBuf(char c);
 aphexCom aphexMode;
 aphexCom aphexEditMode;
+bool aphexEditForward;
 
 bool quit;
 
