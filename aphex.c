@@ -4,7 +4,7 @@
 int main(int argc, char **argv)
 {
 	if (argc < 2 || (strcmp(argv[1], "-h") == 0)) {
-		printf("aphex v0.2\n");
+		printf("aphex v0.3\n");
 		printf("\n");
 		printf("usage: %s [-r] <file>\n", argv[0]);
 		printf("-r: open file readonly\n");
@@ -23,6 +23,7 @@ int main(int argc, char **argv)
 		printf("redraw after resize: q (or any movement)\n");
 		printf("input mode: i\n");
 		printf("command mode: ESC\n");
+		printf("cycle edit mode: TAB\n");
 		exit(EXIT_SUCCESS);
 	}
 	if (strcmp(argv[1], "-r") == 0) {
