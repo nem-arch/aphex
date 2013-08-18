@@ -61,7 +61,7 @@ void aphexWinDraw(aphexWin *win)
 	aphexContentHex(&winHex);
 	aphexContentBin(&winBin);
 	aphexContentPrompt(&winPrompt);
-	printf("\033[1;1H");
+	printf("\033[0;0H");
 	fflush(stdout);
 	for (int i=0; i<win->height; i++) {
 		for (int j=0; j<win->width; j++) {
