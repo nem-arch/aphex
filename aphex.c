@@ -24,6 +24,7 @@ int main(int argc, char **argv)
 		printf("input mode: i\n");
 		printf("command mode: ESC\n");
 		printf("cycle edit mode: TAB\n");
+		printf("go back 1 byte in ascii edit: BACKSPACE\n");
 		exit(EXIT_SUCCESS);
 	}
 	if (strcmp(argv[1], "-r") == 0) {
