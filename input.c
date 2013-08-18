@@ -54,6 +54,12 @@ void aphexInputProcess()
 				aphexMode = APHEX_READONLY_MODE;
 			}
 			break;
+		case (APHEX_EDIT_HEX):
+			break;
+		case (APHEX_EDIT_ASCII):
+			break;
+		case (APHEX_EDIT_BIN):
+			break;
 		case (APHEX_DELETE_COMBUF):
 			resetComBuf();
 			break;
@@ -275,12 +281,10 @@ void aphexCursorBottom()
 void aphexCursorSet(int x, int y)
 {
 	if (cbxr(x) && cbxl(x) && cbyt(y) && cbyb(y)) {
-		char tput[128];
 		if ((x - APHEX_WIN_HEX_X)/3<8)
-			sprintf(tput,"tput cup %i %i",y,x);
+			printf("\033[%i;%iH",y,x);
 		if ((x - APHEX_WIN_HEX_X)/3>=8)
-			sprintf(tput,"tput cup %i %i",y,x+1);
-		system(tput);
+			printf("\033[%i;%iH",y,x+1);
 	}
 }
 

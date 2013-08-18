@@ -4,10 +4,12 @@
 int main(int argc, char **argv)
 {
 	if (argc < 2 || (strcmp(argv[1], "-h") == 0)) {
+		printf("aphex v0.2\n");
+		printf("\n");
 		printf("usage: %s [-r] <file>\n", argv[0]);
 		printf("-r: open file readonly\n");
 		printf("\n");
-		printf("maximum filesize on system: %lu MB\n",ULONG_MAX/1024/1024);
+		printf("maximum filesize on system: %lu MB\n",LONG_MAX/1024/1024);
 		printf("\n");
 		printf("up, down, left, right: j, k, h, l\n");
 		printf("line start, line end: 0, $\n");
@@ -31,6 +33,7 @@ int main(int argc, char **argv)
 		buf_open((unsigned char*)argv[1]);
 	}
 
+	aphexEditMode = APHEX_EDIT_HEX;
 	quit = false;
 	comNum = 1;
 	resetComBuf();

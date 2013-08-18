@@ -9,8 +9,11 @@ void aphexWinInit(aphexWin *win, int x, int y, int w, int h, bool lf)
 	win->c = (char*)calloc(w*h,1);
 	aphexWinClear(win,lf);
 }
-void aphexWinPut(aphexWin *win, char* c, int x, int y) { for (int i=x;i<x+sizeof(c);i++) {
-		win->c[i+y*win->width] = c[i-x]; }
+void aphexWinPut(aphexWin *win, char* c, int x, int y)
+{
+	for (int i=x;i<x+sizeof(c);i++) {
+		win->c[i+y*win->width] = c[i-x];
+	}
 }
 
 void aphexWinToWin(aphexWin *base, aphexWin *win)
