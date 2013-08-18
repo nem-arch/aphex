@@ -85,7 +85,7 @@ long buf_getoffset()
 	return ((cursorX - APHEX_WIN_HEX_X)/3 + (cursorY - APHEX_WIN_HEX_Y)*16 + buf.shiftOffset*16);
 }
 
-void buf_memBin(unsigned char* byte)
+void buf_memBin(char* byte)
 {
 	for (int i=0;i<4;i++) {
 		byte[9-i] = ((buf.mem[buf.offset]&(1<<i))?'1':'0');

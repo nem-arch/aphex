@@ -2,7 +2,7 @@
 TARGET			= aphex
 
 CC			= gcc
-CFLAGS			= -Wall -ggdb -std=c99 -pedantic
+CFLAGS			= -Wall -ggdb -std=c99 -pedantic -Wno-switch
 
 PREFIX			?= /usr
 BINPREFIX		= $(PREFIX)/bin

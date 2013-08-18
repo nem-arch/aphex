@@ -307,15 +307,12 @@ void aphexCursorSetByOffset(long o)
 
 void aphexCursorSet(int x, int y)
 {
-	char tput[128];
 	if (aphexCursorHexBorderXRight(x) && aphexCursorHexBorderXLeft(x) && aphexCursorHexBorderYTop(y) && aphexCursorHexBorderYBottom(y)) {
 		if ((x - APHEX_WIN_HEX_X)/3<8)
-			sprintf(tput,"tput cup %i %i",y,x);
-			//printf("\033[1;1H",y,x);
+			printf("\033[%i;%iH",y+1,x+1);
 		if ((x - APHEX_WIN_HEX_X)/3>=8)
-			sprintf(tput,"tput cup %i %i",y,x+1);
-			//printf("\033[1;1H",y,x+1);
-		system(tput);
+			printf("\033[%i;%iH",y+1,x+2);
+		fflush(stdout);
 	}
 }
 

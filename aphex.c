@@ -38,10 +38,8 @@ int main(int argc, char **argv)
 	comNum = 1;
 	resetComBuf();
 	// clear screen
-	printf("\033[2J");
-	printf("\033[1;1H");
-	cursorX = 0;
-	cursorY = 0;
+	printf("\033[2J\03381;1H");
+	fflush(stdout);
 	if (!aphexContentInit()) {
 		printf("terminal too small\n");
 		exit(EXIT_SUCCESS);
@@ -55,7 +53,7 @@ int main(int argc, char **argv)
 
 	buf_close();
 	aphexContentFree();
-	printf("\033[2J");
-	printf("\033[1;1H");
+	printf("\033[2J\033[1,1H");
+	fflush(stdout);
 	exit(EXIT_SUCCESS);
 }

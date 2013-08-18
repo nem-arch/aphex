@@ -31,6 +31,6 @@ void buf_edit(unsigned char c);
 long buf_getoffset();
 
 /* write 9 bytes back to *byte (2 nibbles, 1 space) */
-void buf_memBin(unsigned char *byte);
+void buf_memBin(char *byte);
 
 #endif // BUFFER_H_INCLUDED
