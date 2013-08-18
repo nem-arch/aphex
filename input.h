@@ -1,9 +1,15 @@
 #ifndef INPUT_H_INCLUDED
 #define INPUT_H_INCLUDED
 
-typedef enum { CURSOR_UP, CURSOR_DOWN, CURSOR_LEFT, CURSOR_RIGHT, CURSOR_BOTTOM, CURSOR_TOP, CURSOR_HOME, CURSOR_END,
-	APHEX_REDRAW, APHEX_INSERT_MODE = 'I', APHEX_COMMAND_MODE = 'C', APHEX_READONLY_MODE = 'R', APHEX_DELETE_COMBUF,
-	APHEX_EDIT_HEX, APHEX_EDIT_ASCII, APHEX_EDIT_BIN, QUIT, NONE } aphexCom;
+typedef enum { APHEX_EDIT_ASCII = 'A',
+	APHEX_EDIT_BIN = 'B',
+	APHEX_COMMAND_MODE = 'C',
+	APHEX_EDIT_HEX = 'H',
+	APHEX_INSERT_MODE = 'I',
+	APHEX_READONLY_MODE = 'R',
+	CURSOR_UP, CURSOR_DOWN, CURSOR_LEFT, CURSOR_RIGHT, CURSOR_BOTTOM, CURSOR_TOP, CURSOR_HOME, CURSOR_END,
+	APHEX_REDRAW, APHEX_DELETE_COMBUF,
+	APHEX_CYCLE_EDIT_MODE, QUIT, NONE } aphexCom;
 
 char comBuf[128];
 unsigned long comNum;
@@ -36,14 +42,11 @@ void aphexCursorSetYDown(long o);
 /* catch user input, redraw window, set cursor */
 void aphexInputProcess();
 
-bool aphexCursorHexBorderYTop(int y);
-bool aphexCursorHexBorderYBottom(int y);
-bool aphexCursorHexBorderXLeft(int x);
-bool aphexCursorHexBorderXRight(int x);
+void aphexCycleEditMode();
 
-bool aphexCursorAsciiBorderYTop(int y);
-bool aphexCursorAsciiBorderYBottom(int y);
-bool aphexCursorAsciiBorderXLeft(int x);
-bool aphexCursorAsciiBorderXRight(int x);
+bool aphexCursorBorderYTop(int y);
+bool aphexCursorBorderYBottom(int y);
+bool aphexCursorBorderXLeft(int x);
+bool aphexCursorBorderXRight(int x);
 
 #endif // INPUT_H_INCLUDED

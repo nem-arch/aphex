@@ -74,8 +74,14 @@ void buf_edit(unsigned char c)
 			}
 			break;
 		case (APHEX_EDIT_BIN):
+			if ((c=='1')||(c=='0')) {
+				buf.mem[buf.offset] = buf.mem[buf.offset]^(0x80>>(cursorX-APHEX_WIN_BIN_X));
+			}
 			break;
 		case (APHEX_EDIT_ASCII):
+			if (isPrintable(c)) {
+				buf.mem[buf.offset] = c;
+			}
 			break;
 	}
 }

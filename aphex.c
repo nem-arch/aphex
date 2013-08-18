@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 	comNum = 1;
 	resetComBuf();
 	// clear screen
-	printf("\033[2J\03381;1H");
+	printf("\033[2J\0331;1H");
 	fflush(stdout);
 	if (!aphexContentInit()) {
 		printf("terminal too small\n");

@@ -177,7 +177,7 @@ void aphexContentBin(aphexWin *win)
 void aphexContentPrompt(aphexWin *win)
 {
 	snprintf(win->c, win->width, "offset: 0x%.16lX nibble: %s goto: 0x%.16lX", buf.offset, (buf.nibble?"HIGH":"LOW "),comNum);
-	snprintf(&win->c[win->width], win->width, "aphex [%c] [%.3i %.3i] shift: %.16lX com: %s",aphexMode,cursorX,cursorY,buf.shiftOffset,comBuf);
+	snprintf(&win->c[win->width], win->width, "aphex [%c %c] [%.3i %.3i] shift: %.16lX com: %s",aphexMode,aphexEditMode,cursorX,cursorY,buf.shiftOffset,comBuf);
 	
 	aphexWinToWin(&winBase, &winPrompt);
 }

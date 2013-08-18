@@ -27,7 +27,7 @@ void buf_setoffset(int offset);
 /* edit mem at current index/nibble */
 void buf_edit(unsigned char c);
 
-/* DEPRECATED - return current buf.offset */
+/* calculates the current offset from cursorposition */
 long buf_getoffset();
 
 /* write 9 bytes back to *byte (2 nibbles, 1 space) */
