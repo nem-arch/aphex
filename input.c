@@ -410,7 +410,7 @@ void aphexCursorSetByOffset(long o)
 		aphexCursorRight(-1);
 	}
 	long x = ((o%16) - (buf.offset%16));
-	long y = ((o - buf.offset)/16);
+	long y = ((o/16) - (buf.offset/16));
 
 	if (y>0) {
 		aphexCursorSetYDown(y);
@@ -419,10 +419,8 @@ void aphexCursorSetByOffset(long o)
 	}
 	if (x>0) {
 		aphexCursorSetXRight(x);
-		if (y<0) aphexCursorDown(-1);
 	} else {
 		aphexCursorSetXLeft(-x);
-		if (y>0) aphexCursorDown(1);
 	}
 	return;
 }

@@ -30,10 +30,11 @@ void buf_open(unsigned char* fname)
 		exit(EXIT_FAILURE);
 	}
 	buf.memsize = sb.st_size;
-	buf_setoffset(0);
+	buf.offset = 0;
 	buf.shiftOffset = 0;
 	buf.editmode = APHEX_HEX;
 	buf.controlmode = APHEX_INSERT;
+	buf.nibble = APHEX_NIBBLE_HIGH;
 }
 
 void buf_close()
@@ -50,7 +51,7 @@ void buf_setoffset(int offset)
 	if (offset < 0) {
 		buf.offset = 0;
 	}
-	if ((offset >= 0) && (offset < buf.memsize)) {
+	if ((offset >= 0) && (offset < buf.memsize - 1)) {
 		buf.offset = offset;
 	}
 	if (offset >= buf.memsize) {
