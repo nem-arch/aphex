@@ -346,7 +346,7 @@ void aphexCursorEnd()
 				if ((buf.offset == buf.memsize-1) || ( (buf.offset&0x0000001F) == 0x1F) ) return;
 				// nonfull line
 				cursorX = APHEX_WIN_HEX_X + ((buf.memsize-1)%16)*3 +1;
-				buf.offset = (buf.memsize-(buf.memsize%16)) + ((buf.memsize-1)%16);
+				buf.offset = (buf.memsize/16)*16-1+(buf.memsize%16);
 			}
 			break;
 		case (APHEX_EDIT_ASCII):
@@ -359,7 +359,7 @@ void aphexCursorEnd()
 				if ((buf.offset == buf.memsize-1) || ((buf.offset&0x0000001F) == 0x1F)) return;
 				// nonfull line
 				cursorX = APHEX_WIN_ASCII_X + ((buf.memsize-1)%16);
-				buf.offset = (buf.memsize-(buf.memsize%16)) + ((buf.memsize-1)%16);
+				buf.offset = (buf.memsize/16)*16-1+(buf.memsize%16);
 			}
 			break;
 	}
@@ -394,13 +394,13 @@ void aphexCursorBottom()
 			if (buf.memsize/16 < (aphexWinMainBottom())) {
 				// no shift needed, view shorter than term
 				buf.shiftOffset = 0;
-				buf.offset = buf.memsize - buf.memsize%16;
+				buf.offset = (buf.memsize/16)*16;
 				cursorX = APHEX_WIN_HEX_X;
-				cursorY = (buf.memsize/16) + APHEX_WIN_HEX_Y;
+				cursorY = (buf.memsize/16) + APHEX_WIN_HEX_Y - 1;
 			} else {
 				// shift needed, view longer than term
 				buf.shiftOffset = buf.memsize/16 + (buf.memsize%16?1:0) - (aphexWinMainBottom()-1);
-				buf.offset = buf.memsize - buf.memsize%16;
+				buf.offset = (buf.memsize/16)*16 - (buf.memsize%16?0:1)*16;
 				cursorX = APHEX_WIN_HEX_X;
 				cursorY = (aphexWinMainBottom()-1);
 			}
@@ -409,13 +409,13 @@ void aphexCursorBottom()
 			if (buf.memsize/16 < (aphexWinMainBottom())) {
 				// no shift needed, view shorter than term
 				buf.shiftOffset = 0;
-				buf.offset = buf.memsize - buf.memsize%16;
+				buf.offset = (buf.memsize/16)*16;
 				cursorX = APHEX_WIN_ASCII_X;
 				cursorY = (buf.memsize/16) + APHEX_WIN_ASCII_Y;
 			} else {
 				// shift needed, view longer than term
 				buf.shiftOffset = buf.memsize/16 + (buf.memsize%16?1:0) - (aphexWinMainBottom()-1);
-				buf.offset = buf.memsize - buf.memsize%16;
+				buf.offset = (buf.memsize/16)*16 - (buf.memsize%16?0:1)*16;
 				cursorX = APHEX_WIN_ASCII_X;
 				cursorY = (aphexWinMainBottom()-1);
 			}
