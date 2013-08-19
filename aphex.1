@@ -1,0 +1,127 @@
+.TH APHEX 1 "last edited: 2013-08-19" "aphex v0.3" " "
+
+.SH NAME
+aphex \- a lightweight cli hex editor
+
+.SH SYNOPSIS
+.PP
+aphex [\fB\-h\fR]
+.PP
+aphex [\fB\-r\fR] \fIfile\fR...
+
+.SH DESCRIPTION
+Display HEX, ASCII and BINARY data of the given \fIfile\fR and allow write through editing.
+
+.SH OPTIONS
+.IP \fB\-h\fR
+Show keybinds and parameters.
+.IP \fB\-r\fR
+Open \fIfile\fR read-only.
+.\".SH RETURN VALUE
+.\".SH ERRORS
+.\".SH DIAGNOSTICS
+.SH CONTROLS
+.SS Command and insert mode
+
+.PP
+.I TAB
+.RS
+Cycle through windows.
+.RE
+
+.PP
+.I Q
+.RS
+Quit aphex.
+.RE
+
+.SS Command Mode
+
+.PP
+.I i
+.RS
+Enter insert mode, unless
+.B \-r
+is given.
+.RE
+
+.PP
+.I 0-9
+.RS
+Write decimal offset to command buffer.
+.RE
+
+.PP
+.I ESC
+.RS
+Clear command buffer (set to default 1).
+.RE
+
+.PP
+.I Nh, Nj, Nk, Nl
+.RS
+Move cursor left/down/up/right by N lines/bytes where N is any integer in command buffer. If no N is explicitly given, the default value 1 is used.
+.RE
+
+.PP
+.I Ng
+.RS
+Jump to decimal offset N where N is any integer in command buffer.
+.RE
+
+.PP
+.I 0, $
+.RS
+Jump to start/end of line.
+.RE
+
+.PP
+.I gg, G
+.RS
+Jump to first/last line of file.
+.RE
+
+.PP
+.I q
+.RS
+Redraw window after resize.
+.RE
+
+.SS Insert Mode
+
+.PP
+.I ESC
+.RS
+Enter command mode.
+.RE
+
+.B ASCII window:
+.RS
+
+.PP
+.I BACKSPACE
+.RS
+Move cursor one byte back (across lines).
+.RE
+
+.RE
+
+.SH NOTES
+All changes made in insert mode are directly written to file. There is currently no undo function.
+.PP
+In ASCII insert mode, forwarding is enabled. After every edit input, the cursor jumps to the next offset byte even across lines. This allows direct text editing.
+.PP
+You can use the movement keys in HEX insert mode.
+
+.SH EXAMPLES
+.TP
+aphex \-r .vimrc
+Open .vimrc in read-only mode.
+.TP
+aphex .bashrc
+Open .bashrc for editing.
+.\".SH BUGS
+.\".SH RESTRICTIONS
+.\".SH SEE ALSO
+.\".SH AUTHOR
+.\".SH HISTORY
