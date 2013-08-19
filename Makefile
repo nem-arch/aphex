@@ -21,5 +21,5 @@ install:
 	cp -p $(TARGET).1 "$(DESTDIR)$(MANPREFIX)/$(TARGET).1"
 
 uninstall:
-	mkdir -p "$(DESTDIR)$(BINPREFIX)/$(TARGET)"
-
+	rm "$(DESTDIR)$(BINPREFIX)/$(TARGET)"
+	rm "$(DESTDIR)$(MANPREFIX)/$(TARGET).1"
