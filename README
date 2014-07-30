@@ -1,0 +1,98 @@
+APHEX(1)                                                                                                                                           APHEX(1)
+
+
+
+NAME
+       aphex - a lightweight cli hex editor
+
+
+SYNOPSIS
+       aphex [-h]
+
+       aphex [-r] file...
+
+
+DESCRIPTION
+       Display HEX, ASCII and BINARY data of the given file and allow write through editing.
+
+
+OPTIONS
+       -h     Show keybinds and parameters.
+
+       -r     Open file read-only.
+
+CONTROLS
+   Command and insert mode
+       TAB
+              Cycle through windows.
+
+
+       Q
+              Quit aphex.
+
+
+   Command Mode
+       i
+              Enter insert mode, unless -r is given.
+
+
+       0-9
+              Write decimal offset to command buffer.
+
+
+       ESC
+              Clear command buffer (set to default 1).
+
+
+       Nh, Nj, Nk, Nl
+              Move cursor left/down/up/right by N lines/bytes where N is any integer in command buffer. If no N is explicitly given, the default value 1 is
+              used.
+
+
+       Ng
+              Jump to decimal offset N where N is any integer in command buffer.
+
+
+       0, $
+              Jump to start/end of line.
+
+
+       gg, G
+              Jump to first/last line of file.
+
+
+       q
+              Redraw window after resize.
+
+
+   Insert Mode
+       ESC
+              Enter command mode.
+
+       ASCII window:
+
+
+              BACKSPACE
+                     Move cursor one byte back (across lines).
+
+
+
+NOTES
+       All changes made in insert mode are directly written to file. There is currently no undo function.
+
+       In ASCII insert mode, forwarding is enabled. After every edit input, the cursor jumps to the next offset byte even across lines. This allows  direct
+       text editing.
+
+       You can use the movement keys in HEX insert mode.
+
+
+EXAMPLES
+       aphex -r .vimrc
+              Open .vimrc in read-only mode.
+
+       aphex .bashrc
+              Open .bashrc for editing.
+
+
+
+aphex v0.3                                                        last edited: 2013-08-19                                                          APHEX(1)
