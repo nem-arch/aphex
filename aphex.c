@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 
 	buf_close();
 	aphexContentFree();
-	printf("\033[0,0H\033[2J\033[0,0H");
+	printf("\033[0;0H\033[2J\033[0;0H");
 	fflush(stdout);
 	exit(EXIT_SUCCESS);
 }
